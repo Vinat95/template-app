@@ -1,0 +1,87 @@
+<nz-layout>
+  <nz-sider
+    nzCollapsible
+    [(nzCollapsed)]="isCollapsed"
+    [nzCollapsedWidth]="0"
+    [nzTrigger]="null"
+  >
+    <div nz-flex class="avatar-mobile" [nzJustify]="'center'">
+      <nz-avatar
+        nz-dropdown
+        [nzDropdownMenu]="menu"
+        [nzSrc]="user()?.picture"
+        nzSize="large"
+        nzIcon="user"
+      ></nz-avatar>
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu nzSelectable>
+          @if(authenticated()){
+          <li nz-menu-item nzDanger (click)="doLogout()">Logout</li>
+          }@else {
+          <li nz-menu-item (click)="doLogin()">Login</li>
+          }
+        </ul>
+      </nz-dropdown-menu>
+    </div>
+    <ul
+      nz-menu
+      [nzTheme]="'dark'"
+      [nzMode]="'inline'"
+      [nzInlineCollapsed]="isCollapsed"
+    >
+      <li nz-menu-item routerLink="home" [nzMatchRouter]="true">
+        <span nz-icon nzType="home" nzTheme="outline"></span
+        ><span class="nav-text">Home</span>
+      </li>
+      @if(authenticated()){
+      <li nz-menu-item routerLink="next" [nzMatchRouter]="true">
+        <span nz-icon nzType="export" nzTheme="outline"></span
+        ><span class="nav-text">next</span>
+      </li>
+      }
+    </ul>
+  </nz-sider>
+  <nz-layout>
+    <nz-header>
+      @if(!isLargeScreen){
+      <span
+        class="trigger"
+        nz-icon
+        [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+        (click)="isCollapsed = !isCollapsed"
+      ></span>
+      } @if(isLargeScreen){
+      <div nz-flex [nzGap]="100" [nzAlign]="'center'">
+        <nz-avatar
+          nz-dropdown
+          [nzDropdownMenu]="menu"
+          [nzSrc]="user()?.picture"
+          [nzSize]="50"
+          nzIcon="user"
+          class="avatar-desktop"
+        ></nz-avatar>
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+          <ul nz-menu nzSelectable>
+            @if(authenticated()){
+            <li nz-menu-item nzDanger (click)="doLogout()">Logout</li>
+            }@else {
+            <li nz-menu-item (click)="doLogin()">Login</li>
+            }
+          </ul>
+        </nz-dropdown-menu>
+        <ul nz-menu nzTheme="dark" nzMode="horizontal">
+          <li nz-menu-item routerLink="home" [nzMatchRouter]="true">Home</li>
+          @if(authenticated()){
+          <li nz-menu-item routerLink="next" [nzMatchRouter]="true">Next</li>
+          }
+        </ul>
+      </div>
+      }
+    </nz-header>
+    <nz-content class="container">
+      <nz-breadcrumb [nzAutoGenerate]="true"> </nz-breadcrumb>
+      <router-outlet></router-outlet>
+    </nz-content>
+    <nz-footer>Footer ©2024</nz-footer>
+  </nz-layout>
+</nz-layout>
