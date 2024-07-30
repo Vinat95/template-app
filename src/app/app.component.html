@@ -16,9 +16,13 @@
       <nz-dropdown-menu #menu="nzDropdownMenu">
         <ul nz-menu nzSelectable>
           @if(authenticated()){
-          <li nz-menu-item nzDanger (click)="doLogout()">Logout</li>
+          <li nz-menu-item nzDanger (click)="doLogout()">
+            <span nz-icon nzType="logout" nzTheme="outline"></span> Logout
+          </li>
           }@else {
-          <li nz-menu-item (click)="doLogin()">Login</li>
+          <li nz-menu-item (click)="doLogin()">
+            <span nz-icon nzType="login" nzTheme="outline"></span> Login
+          </li>
           }
         </ul>
       </nz-dropdown-menu>
@@ -63,9 +67,13 @@
         <nz-dropdown-menu #menu="nzDropdownMenu">
           <ul nz-menu nzSelectable>
             @if(authenticated()){
-            <li nz-menu-item nzDanger (click)="doLogout()">Logout</li>
+            <li nz-menu-item nzDanger (click)="doLogout()">
+              <span nz-icon nzType="logout" nzTheme="outline"></span> Logout
+            </li>
             }@else {
-            <li nz-menu-item (click)="doLogin()">Login</li>
+            <li nz-menu-item (click)="doLogin()">
+              <span nz-icon nzType="login" nzTheme="outline"></span> Login
+            </li>
             }
           </ul>
         </nz-dropdown-menu>
