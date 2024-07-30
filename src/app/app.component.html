@@ -1,7 +1,7 @@
 <nz-layout>
   <nz-sider
     nzCollapsible
-    [(nzCollapsed)]="isCollapsed"
+    [nzCollapsed]="isLargeScreen? true : isCollapsed"
     [nzCollapsedWidth]="0"
     [nzTrigger]="null"
   >
