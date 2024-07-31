@@ -19,6 +19,13 @@ export const routes: Routes = [
       breadcrumb: 'Next',
     },
   },
+  {
+    path: 'admin-page',
+    loadComponent: () => import('./admin-page/admin-page.component'),
+    data: {
+      breadcrumb: 'Admin page',
+    },
+  },
   { path: '404', component: NotFoundComponent },
   { path: '**', redirectTo: '/404' },
 ];

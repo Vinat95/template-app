@@ -82,6 +82,9 @@
           @if(authenticated()){
           <li nz-menu-item routerLink="next" [nzMatchRouter]="true">Next</li>
           }
+          @if(authenticated() && userRole=== 'Admin'){
+          <li nz-menu-item routerLink="admin-page" [nzMatchRouter]="true">Admin Page</li>
+          }
         </ul>
       </div>
       }
