@@ -36,14 +36,13 @@ export class AuthService {
     return this.auth.idTokenClaims$.pipe(
       map((claims) => {
         if (claims) {
-          this.jwt = claims.__raw; // Salva il token di accesso grezzo
-          console.log("Access Token:", this.jwt);
+          this.jwt = claims.__raw;
           const decodedToken: any = jwtDecode(this.jwt);
           const roles = decodedToken["https://my-public-api/roles"];
           this.userRoleSubject.next(roles);
           return roles || [];
         }
-        return []; // Ritorna un array vuoto se non ci sono claims
+        return [];
       }),
       catchError((err) => {
         console.error("Error occurred while processing user roles:", err);
