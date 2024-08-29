@@ -61,7 +61,7 @@ export class AppComponent implements OnInit {
     //Role after login
     if (window.location.search.includes("code=")) {
       this.auth.handleRedirectCallback().subscribe((res) => {
-        this.userRole = res.data[0].name;
+        this.userRole = res[0];
       });
     } else {
       // Retrieve the user role from the service

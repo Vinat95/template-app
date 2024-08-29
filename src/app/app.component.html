@@ -1,7 +1,7 @@
 <nz-layout>
   <nz-sider
     nzCollapsible
-    [nzCollapsed]="isLargeScreen? true : isCollapsed"
+    [nzCollapsed]="isLargeScreen ? true : isCollapsed"
     [nzCollapsedWidth]="0"
     [nzTrigger]="null"
   >
@@ -9,7 +9,7 @@
       <nz-avatar
         nz-dropdown
         [nzDropdownMenu]="menu"
-        [nzSrc]="user()?.picture"
+        nzSrc="{{ user()?.picture }}"
         nzSize="large"
         nzIcon="user"
       ></nz-avatar>
@@ -42,6 +42,11 @@
         <span nz-icon nzType="export" nzTheme="outline"></span
         ><span class="nav-text">next</span>
       </li>
+      } @if(authenticated() && userRole=== 'Admin'){
+      <li nz-menu-item routerLink="admin-page" [nzMatchRouter]="true">
+        <span nz-icon nzType="user" nzTheme="outline"></span>
+        <span class="nav-text">Admin Page</span>
+      </li>
       }
     </ul>
   </nz-sider>
@@ -59,7 +64,7 @@
         <nz-avatar
           nz-dropdown
           [nzDropdownMenu]="menu"
-          [nzSrc]="user()?.picture"
+          nzSrc="{{ user()?.picture }}"
           [nzSize]="50"
           nzIcon="user"
           class="avatar-desktop"
@@ -81,9 +86,10 @@
           <li nz-menu-item routerLink="home" [nzMatchRouter]="true">Home</li>
           @if(authenticated()){
           <li nz-menu-item routerLink="next" [nzMatchRouter]="true">Next</li>
-          }
-          @if(authenticated() && userRole=== 'Admin'){
-          <li nz-menu-item routerLink="admin-page" [nzMatchRouter]="true">Admin Page</li>
+          } @if(authenticated() && userRole=== 'Admin'){
+          <li nz-menu-item routerLink="admin-page" [nzMatchRouter]="true">
+            Admin Page
+          </li>
           }
         </ul>
       </div>
