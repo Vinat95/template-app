@@ -2,21 +2,23 @@ import { inject, Injectable } from "@angular/core";
 import { AuthService as Auth0Service } from "@auth0/auth0-angular";
 import { HttpClient } from "@angular/common/http";
 import { BehaviorSubject, Observable, of } from "rxjs";
-import { catchError, filter, map, switchMap, tap } from "rxjs/operators";
+import { catchError, map } from "rxjs/operators";
 import { DOCUMENT } from "@angular/common";
 import { toSignal } from "@angular/core/rxjs-interop";
+import { jwtDecode } from "jwt-decode";
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthService {
-  private userRoleSubject = new BehaviorSubject<any>(this.getUserRoleFromStorage());
+  private userRoleSubject = new BehaviorSubject<any>(null);
   userRole$ = this.userRoleSubject.asObservable();
   auth = inject(Auth0Service);
   http = inject(HttpClient);
   document = inject(DOCUMENT);
   authenticated = toSignal(this.auth.isAuthenticated$);
   user = toSignal(this.auth.user$);
+  jwt: string = "";
 
   doLogin() {
     this.auth.loginWithRedirect();
@@ -28,39 +30,25 @@ export class AuthService {
         returnTo: this.document.location.origin,
       },
     });
-    this.removeUserRoleFromStorage();
   }
 
-  handleRedirectCallback(): Observable<any> {
-    return this.auth.user$.pipe(
-      filter((user) => !!user && !!user['https://my-public-api/roles']),
-      map((user) => {
-        return user!['https://my-public-api/roles'];
-      }),
-      tap((roles) => {
-        if (roles && roles.length > 0) {
-          const userRole = roles[0];
-          this.saveUserRoleToStorage(userRole);
-          this.userRoleSubject.next(userRole);
+  handleRedirectCallback(): Observable<string[]> {
+    return this.auth.idTokenClaims$.pipe(
+      map((claims) => {
+        if (claims) {
+          this.jwt = claims.__raw; // Salva il token di accesso grezzo
+          console.log("Access Token:", this.jwt);
+          const decodedToken: any = jwtDecode(this.jwt);
+          const roles = decodedToken["https://my-public-api/roles"];
+          this.userRoleSubject.next(roles);
+          return roles || [];
         }
+        return []; // Ritorna un array vuoto se non ci sono claims
       }),
       catchError((err) => {
         console.error("Error occurred while processing user roles:", err);
-        return of(null);
+        return of([]); // Ritorna un array vuoto in caso di errore
       })
     );
-  }
-
-  private saveUserRoleToStorage(role: any) {
-    localStorage.setItem("userRole", JSON.stringify(role));
-  }
-
-  private getUserRoleFromStorage(): any {
-    const role = localStorage.getItem("userRole");
-    return role ? JSON.parse(role) : null;
-  }
-
-  private removeUserRoleFromStorage() {
-    localStorage.removeItem("userRole");
   }
 }

@@ -10,9 +10,7 @@ import { NzFlexModule } from "ng-zorro-antd/flex";
 import { NzAvatarModule } from "ng-zorro-antd/avatar";
 import { NzDropDownModule } from "ng-zorro-antd/dropdown";
 import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
-import { toSignal } from "@angular/core/rxjs-interop";
 import { HttpClient } from "@angular/common/http";
-import { catchError, of, switchMap, tap } from "rxjs";
 import { AuthService } from "../auth.service";
 
 type Size = "xxl" | "xl" | "lg" | "md" | "sm" | "xs" | null;
@@ -57,18 +55,10 @@ export class AppComponent implements OnInit {
       .subscribe((result) => {
         this.isLargeScreen = result.matches;
       });
-
     //Role after login
-    if (window.location.search.includes("code=")) {
-      this.auth.handleRedirectCallback().subscribe((res) => {
-        this.userRole = res[0];
-      });
-    } else {
-      // Retrieve the user role from the service
-      this.auth.userRole$.subscribe((role) => {
-        this.userRole = role;
-      });
-    }
+    this.auth.handleRedirectCallback().subscribe((res) => {
+      this.userRole = res[0];
+    });
   }
 
   doLogin() {
