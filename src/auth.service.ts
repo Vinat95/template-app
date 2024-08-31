@@ -19,6 +19,7 @@ export class AuthService {
   authenticated = toSignal(this.auth.isAuthenticated$);
   user = toSignal(this.auth.user$);
   jwt: string = "";
+  userRole: Array<string> = [];
 
   doLogin() {
     this.auth.loginWithRedirect();
@@ -39,6 +40,7 @@ export class AuthService {
           this.jwt = claims.__raw;
           const decodedToken: any = jwtDecode(this.jwt);
           const roles = decodedToken["https://my-public-api/roles"];
+          this.userRole = roles || [];
           this.userRoleSubject.next(roles);
           return roles || [];
         }
@@ -49,5 +51,9 @@ export class AuthService {
         return of([]); // Ritorna un array vuoto in caso di errore
       })
     );
+  }
+
+  getUserRoles(): string[] {
+    return this.userRole;
   }
 }
