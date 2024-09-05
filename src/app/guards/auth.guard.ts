@@ -1,7 +1,7 @@
 import { inject } from "@angular/core";
 import { CanActivateFn, Router } from "@angular/router";
 import { AuthService as Auth0Service } from "@auth0/auth0-angular";
-import { AuthService } from "../../auth.service";
+import { AuthService } from "../authentication/auth.service";
 import { catchError, map, of } from "rxjs";
 
 export const authGuard: CanActivateFn = (route, state) => {
@@ -28,6 +28,26 @@ export const authGuard: CanActivateFn = (route, state) => {
         // Altrimenti fai il redirect alla pagina di insuccesso
         return router.createUrlTree(["/unauthorized-page"]);
       }
+    }),
+    catchError((err) => {
+      // In caso di errore, fai il redirect alla pagina di insuccesso
+      console.error("Error occurred while checking roles:", err);
+      return of(router.createUrlTree(["/unauthorized-page"]));
+    })
+  );
+};
+
+export const signupGuard: CanActivateFn = (route, state) => {
+  const authService = inject(AuthService);
+  const auth0Service = inject(Auth0Service);
+  const router = inject(Router);
+
+  return auth0Service.isAuthenticated$.pipe(
+    map((isAuthenticated) => {
+      if (isAuthenticated) {
+        return router.createUrlTree(["/home"]);
+      }
+      return true;
     }),
     catchError((err) => {
       // In caso di errore, fai il redirect alla pagina di insuccesso

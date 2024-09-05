@@ -11,7 +11,7 @@ import { NzAvatarModule } from "ng-zorro-antd/avatar";
 import { NzDropDownModule } from "ng-zorro-antd/dropdown";
 import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
 import { HttpClient } from "@angular/common/http";
-import { AuthService } from "../auth.service";
+import { AuthService } from "./authentication/auth.service";
 
 type Size = "xxl" | "xl" | "lg" | "md" | "sm" | "xs" | null;
 

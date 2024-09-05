@@ -1,6 +1,6 @@
 import { inject, Injectable } from "@angular/core";
 import { AuthService as Auth0Service } from "@auth0/auth0-angular";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { BehaviorSubject, Observable, of } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 import { DOCUMENT } from "@angular/common";
@@ -20,6 +20,8 @@ export class AuthService {
   user = toSignal(this.auth.user$);
   jwt: string = "";
   userRole: Array<string> = [];
+  private auth0UrlSignUp = 'https://dev-lwot5qle50opfs87.eu.auth0.com/dbconnections/signup';
+  private auth0UrlLogin = 'https://dev-lwot5qle50opfs87.eu.auth0.com/oauth/token';
 
   doLogin() {
     this.auth.loginWithRedirect();
@@ -55,5 +57,21 @@ export class AuthService {
 
   getUserRoles(): string[] {
     return this.userRole;
+  }
+
+  registerUser(email: string, password: string, nickname: string) {
+    const body = {
+      client_id: 'qnPQDHhKfJEZL8CfY0EdZpbEAWWaZo7D',
+      email: email,
+      password: password,
+      connection: 'Username-Password-Authentication',
+      user_metadata: { nickname: nickname },
+    };
+
+    return this.http.post(this.auth0UrlSignUp, body, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+    });
   }
 }
