@@ -20,8 +20,8 @@ export class AuthService {
   user = toSignal(this.auth.user$);
   jwt: string = "";
   userRole: Array<string> = [];
-  private auth0UrlSignUp = 'https://dev-lwot5qle50opfs87.eu.auth0.com/dbconnections/signup';
-  private auth0UrlLogin = 'https://dev-lwot5qle50opfs87.eu.auth0.com/oauth/token';
+  private auth0UrlSignUp =
+    "https://dev-lwot5qle50opfs87.eu.auth0.com/dbconnections/signup";
 
   doLogin() {
     this.auth.loginWithRedirect();
@@ -59,18 +59,23 @@ export class AuthService {
     return this.userRole;
   }
 
-  registerUser(email: string, password: string, nickname: string) {
+  registerUser(
+    email: string,
+    password: string,
+    nickname: string,
+    profileImageBase64: string
+  ) {
     const body = {
-      client_id: 'qnPQDHhKfJEZL8CfY0EdZpbEAWWaZo7D',
+      client_id: "qnPQDHhKfJEZL8CfY0EdZpbEAWWaZo7D",
       email: email,
       password: password,
-      connection: 'Username-Password-Authentication',
-      user_metadata: { nickname: nickname },
+      connection: "Username-Password-Authentication",
+      user_metadata: { nickname: nickname,  profile_image_base64: profileImageBase64 },
     };
 
     return this.http.post(this.auth0UrlSignUp, body, {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       }),
     });
   }

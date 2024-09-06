@@ -10,13 +10,23 @@ import {
 } from "@angular/forms";
 import { NzFormModule } from "ng-zorro-antd/form";
 import { NzInputModule } from "ng-zorro-antd/input";
-import { NzSelectModule } from "ng-zorro-antd/select";
 import { ReactiveFormsModule } from "@angular/forms";
-import { NzFormTooltipIcon } from "ng-zorro-antd/form";
 import { NzAlertModule } from "ng-zorro-antd/alert";
 import { NzSpinModule } from "ng-zorro-antd/spin";
+import { NzUploadModule } from "ng-zorro-antd/upload";
+import { NzModalModule } from "ng-zorro-antd/modal";
+import { NzIconModule } from "ng-zorro-antd/icon";
+import { NzUploadFile } from "ng-zorro-antd/upload";
 import { Router } from "@angular/router";
 import { AuthService } from "../auth.service";
+
+const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
 
 @Component({
   selector: "app-signup",
@@ -25,10 +35,12 @@ import { AuthService } from "../auth.service";
     CommonModule,
     NzFormModule,
     NzInputModule,
-    NzSelectModule,
     ReactiveFormsModule,
     NzAlertModule,
     NzSpinModule,
+    NzUploadModule,
+    NzModalModule,
+    NzIconModule,
   ],
   templateUrl: "./signup.component.html",
   styleUrls: ["./signup.component.css"],
@@ -40,22 +52,24 @@ export default class NotAuthorizedComponent {
   messageAlert: string = "";
   showAlert = false;
   spinner = false;
+  fileList: NzUploadFile[] = [];
+  previewImage: string | undefined = "";
+  previewVisible = false;
   validateForm: FormGroup<{
     email: FormControl<string>;
     password: FormControl<string>;
     checkPassword: FormControl<string>;
     nickname: FormControl<string>;
+    profileImage: FormControl<string>;
   }>;
-  captchaTooltipIcon: NzFormTooltipIcon = {
-    type: "info-circle",
-    theme: "twotone",
-  };
+
   constructor(private fb: NonNullableFormBuilder) {
     this.validateForm = this.fb.group({
       email: ["", [Validators.email, Validators.required]],
       password: ["", [Validators.required, this.passwordValidator]],
       checkPassword: ["", [Validators.required, this.confirmationValidator]],
       nickname: ["", [Validators.required]],
+      profileImage: [""],
     });
   }
 
@@ -64,9 +78,10 @@ export default class NotAuthorizedComponent {
       this.spinner = true;
       this.auth
         .registerUser(
-          this.validateForm.value.email!,
-          this.validateForm.value.password!,
-          this.validateForm.value.nickname!
+          this.validateForm.get('email')?.value!,
+          this.validateForm.get('password')?.value!,
+          this.validateForm.get('nickname')?.value!,
+          this.validateForm.get('profileImage')?.value!
         )
         .subscribe(
           (next) => {
@@ -100,7 +115,6 @@ export default class NotAuthorizedComponent {
   }
 
   updateConfirmValidator(): void {
-    /** wait for refresh value */
     Promise.resolve().then(() =>
       this.validateForm.controls.checkPassword.updateValueAndValidity()
     );
@@ -130,9 +144,23 @@ export default class NotAuthorizedComponent {
     return {};
   };
 
-  getCaptcha(e: MouseEvent): void {
-    e.preventDefault();
-  }
+  // handlePreview = async (file: NzUploadFile): Promise<void> => {
+  //   if (!file.url && !file["preview"]) {
+  //     file["preview"] = await getBase64(file.originFileObj!);
+  //   }
+  //   this.previewImage = file.url || file["preview"];
+  //   this.previewVisible = true;
+  // };
+
+  // onChangeUpload(event: NzUploadChangeParam) {
+  //   if (event.type === 'removed') {
+  //     this.validateForm.get('profileImage')?.reset();
+  //   } else if (event.type === 'success') {
+  //     this.validateForm.patchValue({
+  //       profileImage: event.file.thumbUrl ? event.file.thumbUrl : "",
+  //     });
+  //   }
+  // }
 
   goToHome() {
     this.router.navigate(["home"]);

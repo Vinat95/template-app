@@ -38,9 +38,9 @@
         ><span class="nav-text">Home</span>
       </li>
       @if(authenticated()){
-      <li nz-menu-item routerLink="next" [nzMatchRouter]="true">
+      <li nz-menu-item routerLink="profile" [nzMatchRouter]="true">
         <span nz-icon nzType="export" nzTheme="outline"></span
-        ><span class="nav-text">next</span>
+        ><span class="nav-text">Profile</span>
       </li>
       } @if(authenticated() && userRole=== 'Admin'){
       <li nz-menu-item routerLink="admin-page" [nzMatchRouter]="true">
@@ -85,7 +85,7 @@
         <ul nz-menu nzTheme="dark" nzMode="horizontal">
           <li nz-menu-item routerLink="home" [nzMatchRouter]="true">Home</li>
           @if(authenticated()){
-          <li nz-menu-item routerLink="next" [nzMatchRouter]="true">Next</li>
+          <li nz-menu-item routerLink="profile" [nzMatchRouter]="true">Profile</li>
           } @if(authenticated() && userRole=== 'Admin'){
           <li nz-menu-item routerLink="admin-page" [nzMatchRouter]="true">
             Admin Page

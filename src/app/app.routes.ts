@@ -14,11 +14,11 @@ export const routes: Routes = [
     },
   },
   {
-    path: 'next',
-    loadComponent: () => import('./nextpage/nextpage.component'),
+    path: 'profile',
+    loadComponent: () => import('./profile/profile.component'),
     canActivate: [authGuardFn],
     data: {
-      breadcrumb: 'Next',
+      breadcrumb: 'Profile',
     },
   },
   {
