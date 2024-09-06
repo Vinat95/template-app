@@ -6,6 +6,7 @@ import { catchError, map } from "rxjs/operators";
 import { DOCUMENT } from "@angular/common";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { jwtDecode } from "jwt-decode";
+import { UserAuth } from "../data/update-user.data";
 
 @Injectable({
   providedIn: "root",
@@ -70,7 +71,10 @@ export class AuthService {
       email: email,
       password: password,
       connection: "Username-Password-Authentication",
-      user_metadata: { nickname: nickname,  profile_image_base64: profileImageBase64 },
+      user_metadata: {
+        nickname: nickname,
+        profile_image_base64: profileImageBase64,
+      },
     };
 
     return this.http.post(this.auth0UrlSignUp, body, {
@@ -78,5 +82,13 @@ export class AuthService {
         "Content-Type": "application/json",
       }),
     });
+  }
+
+  getUserDetails(user_id: string) {
+    return this.http.get(`http://localhost:3001/${user_id}/details`);
+  }
+
+  updateUserDetails(user_id: string, details: UserAuth) {
+    return this.http.patch(`http://localhost:3001/${user_id}`, details);
   }
 }
