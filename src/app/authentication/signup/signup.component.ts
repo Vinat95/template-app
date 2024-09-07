@@ -13,7 +13,7 @@ import { NzInputModule } from "ng-zorro-antd/input";
 import { ReactiveFormsModule } from "@angular/forms";
 import { NzAlertModule } from "ng-zorro-antd/alert";
 import { NzSpinModule } from "ng-zorro-antd/spin";
-import { NzUploadModule } from "ng-zorro-antd/upload";
+import { NzUploadChangeParam, NzUploadModule } from "ng-zorro-antd/upload";
 import { NzModalModule } from "ng-zorro-antd/modal";
 import { NzIconModule } from "ng-zorro-antd/icon";
 import { NzUploadFile } from "ng-zorro-antd/upload";
@@ -78,10 +78,10 @@ export default class NotAuthorizedComponent {
       this.spinner = true;
       this.auth
         .registerUser(
-          this.validateForm.get('email')?.value!,
-          this.validateForm.get('password')?.value!,
-          this.validateForm.get('nickname')?.value!,
-          this.validateForm.get('profileImage')?.value!
+          this.validateForm.get("email")?.value!,
+          this.validateForm.get("password")?.value!,
+          this.validateForm.get("nickname")?.value!,
+          this.validateForm.get("profileImage")?.value!
         )
         .subscribe(
           (next) => {
@@ -144,23 +144,30 @@ export default class NotAuthorizedComponent {
     return {};
   };
 
-  // handlePreview = async (file: NzUploadFile): Promise<void> => {
-  //   if (!file.url && !file["preview"]) {
-  //     file["preview"] = await getBase64(file.originFileObj!);
-  //   }
-  //   this.previewImage = file.url || file["preview"];
-  //   this.previewVisible = true;
-  // };
+  resetForm() {
+    this.validateForm.reset();
+  }
 
-  // onChangeUpload(event: NzUploadChangeParam) {
-  //   if (event.type === 'removed') {
-  //     this.validateForm.get('profileImage')?.reset();
-  //   } else if (event.type === 'success') {
-  //     this.validateForm.patchValue({
-  //       profileImage: event.file.thumbUrl ? event.file.thumbUrl : "",
-  //     });
-  //   }
-  // }
+  handlePreview = async (file: NzUploadFile): Promise<void> => {
+    if (!file.url && !file["preview"]) {
+      file["preview"] = await getBase64(file.originFileObj!);
+    }
+    this.previewImage = file.url || file["preview"];
+    this.previewVisible = true;
+  };
+
+  populateImage = (file: NzUploadFile) => {
+    this.validateForm.patchValue({
+      profileImage: file.name,
+    });
+    return true;
+  };
+
+  onChangeUpload(event: NzUploadChangeParam) {
+    if (event.type === "removed") {
+      this.validateForm.get("profileImage")?.reset();
+    }
+  }
 
   goToHome() {
     this.router.navigate(["home"]);
