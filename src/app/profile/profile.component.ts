@@ -125,6 +125,10 @@ export default class ProfilepageComponent {
       : "";
   }
 
+  resetForm() {
+    this.validateForm.reset();
+  }
+
   goToHome() {
     this.router.navigate(["home"]);
   }
