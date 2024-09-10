@@ -77,7 +77,8 @@
             </li>
             }@else {
             <li nz-menu-item (click)="doLogin()">
-              <span nz-icon nzType="login" nzTheme="outline"></span> Login/Signup
+              <span nz-icon nzType="login" nzTheme="outline"></span>
+              Login/Signup
             </li>
             }
           </ul>
@@ -85,7 +86,9 @@
         <ul nz-menu nzTheme="dark" nzMode="horizontal">
           <li nz-menu-item routerLink="home" [nzMatchRouter]="true">Home</li>
           @if(authenticated()){
-          <li nz-menu-item routerLink="profile" [nzMatchRouter]="true">Profile</li>
+          <li nz-menu-item routerLink="profile" [nzMatchRouter]="true">
+            Profile
+          </li>
           } @if(authenticated() && userRole=== 'Admin'){
           <li nz-menu-item routerLink="admin-page" [nzMatchRouter]="true">
             Admin Page
@@ -97,6 +100,7 @@
     </nz-header>
     <nz-content class="container">
       <nz-breadcrumb [nzAutoGenerate]="true"> </nz-breadcrumb>
+      {{ user() | json }}
       <router-outlet></router-outlet>
     </nz-content>
     <nz-footer>Footer ©2024</nz-footer>

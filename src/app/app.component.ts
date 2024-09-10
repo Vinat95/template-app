@@ -56,10 +56,20 @@ export class AppComponent implements OnInit {
         this.isLargeScreen = result.matches;
       });
     //Role after login
+    //TODO: switchmap per chiamata dettagli utente per immagine
     this.auth.handleRedirectCallback().subscribe((res) => {
       this.userRole = res[0];
     });
   }
+
+  // ngAfterViewInit(): void {
+  //   console.log(this.user());
+  //   if (this.user()) {
+  //     this.auth.getUserDetails(this.user()?.sub!).subscribe((res) => {
+  //       console.log("AAA", res);
+  //     });
+  //   }
+  // }
 
   doLogin() {
     this.auth.doLogin();
