@@ -48,7 +48,7 @@ export default class ProfilepageComponent {
   spinner = false;
   user: UserAuth = {
     email: "",
-    user_metadata: { nickname: "", profile_image_base64: "" },
+    user_metadata: { nickname: "", profile_image: "" },
   };
   validateForm: FormGroup<{
     email: FormControl<string>;

@@ -64,7 +64,7 @@ export class AuthService {
     email: string,
     password: string,
     nickname: string,
-    profileImageBase64: string
+    profileImage: string
   ) {
     const body = {
       client_id: "qnPQDHhKfJEZL8CfY0EdZpbEAWWaZo7D",
@@ -73,7 +73,7 @@ export class AuthService {
       connection: "Username-Password-Authentication",
       user_metadata: {
         nickname: nickname,
-        profile_image_base64: profileImageBase64,
+        profile_image: profileImage,
       },
     };
 
@@ -90,5 +90,13 @@ export class AuthService {
 
   updateUserDetails(user_id: string, details: UserAuth) {
     return this.http.patch(`http://localhost:3001/${user_id}`, details);
+  }
+
+  uploadImageToS3Bucket(payload: any) {
+    return this.http.post(`http://localhost:3001/upload/`, payload);
+  }
+
+  deleteImageFromS3Bucket(key: string) {
+    return this.http.delete(`http://localhost:3001/upload/${key}`);
   }
 }

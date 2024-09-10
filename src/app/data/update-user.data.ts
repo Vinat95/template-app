@@ -1,6 +1,6 @@
 export interface UserMetadata {
   nickname: string;
-  profile_image_base64: string;
+  profile_image: string;
 }
 
 export interface UserAuth {

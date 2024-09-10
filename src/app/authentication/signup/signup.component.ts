@@ -13,12 +13,16 @@ import { NzInputModule } from "ng-zorro-antd/input";
 import { ReactiveFormsModule } from "@angular/forms";
 import { NzAlertModule } from "ng-zorro-antd/alert";
 import { NzSpinModule } from "ng-zorro-antd/spin";
-import { NzUploadChangeParam, NzUploadModule } from "ng-zorro-antd/upload";
+import {
+  NzUploadChangeParam,
+  NzUploadModule,
+} from "ng-zorro-antd/upload";
 import { NzModalModule } from "ng-zorro-antd/modal";
 import { NzIconModule } from "ng-zorro-antd/icon";
 import { NzUploadFile } from "ng-zorro-antd/upload";
 import { Router } from "@angular/router";
 import { AuthService } from "../auth.service";
+import { switchMap } from "rxjs";
 
 const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
   new Promise((resolve, reject) => {
@@ -49,6 +53,7 @@ export default class NotAuthorizedComponent {
   router = inject(Router);
   auth = inject(AuthService);
   typeAlert: "error" | "info" | "success" | "warning" = "success";
+  formData: FormData = new FormData();
   messageAlert: string = "";
   showAlert = false;
   spinner = false;
@@ -77,11 +82,16 @@ export default class NotAuthorizedComponent {
     if (this.validateForm.valid) {
       this.spinner = true;
       this.auth
-        .registerUser(
-          this.validateForm.get("email")?.value!,
-          this.validateForm.get("password")?.value!,
-          this.validateForm.get("nickname")?.value!,
-          this.validateForm.get("profileImage")?.value!
+        .uploadImageToS3Bucket(this.formData)
+        .pipe(
+          switchMap((res: any) =>
+            this.auth.registerUser(
+              this.validateForm.get("email")?.value!,
+              this.validateForm.get("password")?.value!,
+              this.validateForm.get("nickname")?.value!,
+              res.url
+            )
+          )
         )
         .subscribe(
           (next) => {
@@ -156,16 +166,13 @@ export default class NotAuthorizedComponent {
     this.previewVisible = true;
   };
 
-  populateImage = (file: NzUploadFile) => {
-    this.validateForm.patchValue({
-      profileImage: file.name,
-    });
-    return true;
-  };
-
   onChangeUpload(event: NzUploadChangeParam) {
     if (event.type === "removed") {
-      this.validateForm.get("profileImage")?.reset();
+      this.formData = new FormData();
+    }
+    if (event.type === "error") {
+      const file = event.file.originFileObj as File;
+      this.formData.append("file", file);
     }
   }
 

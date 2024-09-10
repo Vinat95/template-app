@@ -83,7 +83,6 @@
             [(nzFileList)]="fileList"
             [nzShowButton]="fileList.length < 1"
             [nzPreview]="handlePreview"
-            [nzBeforeUpload]="populateImage"
             (nzChange)="onChangeUpload($event)"
           >
             <div>
@@ -105,10 +104,24 @@
       </nz-form-item>
       <nz-form-item nz-row class="register-area">
         <nz-form-control [nzSpan]="14" [nzOffset]="6">
-          <button nz-button nzType="primary" (click)="resetForm()" [disabled]="!validateForm.dirty">Clear</button>
+          <button
+            nz-button
+            nzType="primary"
+            (click)="resetForm()"
+            [disabled]="!validateForm.dirty"
+          >
+            Clear
+          </button>
         </nz-form-control>
         <nz-form-control [nzSpan]="14" [nzOffset]="6">
-          <button nz-button nzType="primary" type="submit" [disabled]="validateForm.pristine">Register</button>
+          <button
+            nz-button
+            nzType="primary"
+            type="submit"
+            [disabled]="validateForm.pristine"
+          >
+            Register
+          </button>
         </nz-form-control>
       </nz-form-item>
     </form>
