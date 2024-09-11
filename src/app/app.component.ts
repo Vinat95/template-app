@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { AfterViewInit, Component, inject, OnInit } from "@angular/core";
 import { CommonModule, DOCUMENT } from "@angular/common";
 import { RouterLink, RouterOutlet } from "@angular/router";
 import { ReactiveFormsModule } from "@angular/forms";
@@ -7,6 +7,7 @@ import { NzBreadCrumbModule } from "ng-zorro-antd/breadcrumb";
 import { NzIconModule } from "ng-zorro-antd/icon";
 import { NzMenuModule } from "ng-zorro-antd/menu";
 import { NzFlexModule } from "ng-zorro-antd/flex";
+import { NzSpinModule } from "ng-zorro-antd/spin";
 import { NzAvatarModule } from "ng-zorro-antd/avatar";
 import { NzDropDownModule } from "ng-zorro-antd/dropdown";
 import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
@@ -27,6 +28,7 @@ type Size = "xxl" | "xl" | "lg" | "md" | "sm" | "xs" | null;
     NzBreadCrumbModule,
     NzIconModule,
     NzMenuModule,
+    NzSpinModule,
     NzFlexModule,
     NzAvatarModule,
     NzDropDownModule,
@@ -34,7 +36,7 @@ type Size = "xxl" | "xl" | "lg" | "md" | "sm" | "xs" | null;
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.css"],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
   auth = inject(AuthService);
   http = inject(HttpClient);
   breakpointObserver = inject(BreakpointObserver);
@@ -42,9 +44,11 @@ export class AppComponent implements OnInit {
   authenticated = this.auth.authenticated;
   user = this.auth.user;
   isCollapsed = true;
+  spinner = false;
   currentSize: Size = "sm";
   userRole: string = "";
   isLargeScreen: boolean = true;
+  userDetails: any;
 
   constructor() {}
 
@@ -56,20 +60,28 @@ export class AppComponent implements OnInit {
         this.isLargeScreen = result.matches;
       });
     //Role after login
-    //TODO: switchmap per chiamata dettagli utente per immagine
     this.auth.handleRedirectCallback().subscribe((res) => {
       this.userRole = res[0];
     });
   }
 
-  // ngAfterViewInit(): void {
-  //   console.log(this.user());
-  //   if (this.user()) {
-  //     this.auth.getUserDetails(this.user()?.sub!).subscribe((res) => {
-  //       console.log("AAA", res);
-  //     });
-  //   }
-  // }
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      if (this.user()?.sub) {
+        this.spinner = true;
+        this.auth.getUserDetails(this.user()?.sub!).subscribe(
+          (res: any) => (this.userDetails = res.data),
+          (error) => {
+            console.log(error);
+            this.spinner = false;
+          },
+          () => {
+            this.spinner = false;
+          }
+        );
+      }
+    }, 500);
+  }
 
   doLogin() {
     this.auth.doLogin();

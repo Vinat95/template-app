@@ -1,73 +1,22 @@
-<nz-layout>
-  <nz-sider
-    nzCollapsible
-    [nzCollapsed]="isLargeScreen ? true : isCollapsed"
-    [nzCollapsedWidth]="0"
-    [nzTrigger]="null"
-  >
-    <div nz-flex class="avatar-mobile" [nzJustify]="'center'">
-      <nz-avatar
-        nz-dropdown
-        [nzDropdownMenu]="menu"
-        nzSrc="{{ user()?.picture }}"
-        nzSize="large"
-        nzIcon="user"
-      ></nz-avatar>
-      <nz-dropdown-menu #menu="nzDropdownMenu">
-        <ul nz-menu nzSelectable>
-          @if(authenticated()){
-          <li nz-menu-item nzDanger (click)="doLogout()">
-            <span nz-icon nzType="logout" nzTheme="outline"></span> Logout
-          </li>
-          }@else {
-          <li nz-menu-item (click)="doLogin()">
-            <span nz-icon nzType="login" nzTheme="outline"></span> Login/Signup
-          </li>
-          }
-        </ul>
-      </nz-dropdown-menu>
-    </div>
-    <ul
-      nz-menu
-      [nzTheme]="'dark'"
-      [nzMode]="'inline'"
-      [nzInlineCollapsed]="isCollapsed"
-    >
-      <li nz-menu-item routerLink="home" [nzMatchRouter]="true">
-        <span nz-icon nzType="home" nzTheme="outline"></span
-        ><span class="nav-text">Home</span>
-      </li>
-      @if(authenticated()){
-      <li nz-menu-item routerLink="profile" [nzMatchRouter]="true">
-        <span nz-icon nzType="export" nzTheme="outline"></span
-        ><span class="nav-text">Profile</span>
-      </li>
-      } @if(authenticated() && userRole=== 'Admin'){
-      <li nz-menu-item routerLink="admin-page" [nzMatchRouter]="true">
-        <span nz-icon nzType="user" nzTheme="outline"></span>
-        <span class="nav-text">Admin Page</span>
-      </li>
-      }
-    </ul>
-  </nz-sider>
+<nz-spin [nzSize]="'large'" [nzSpinning]="spinner">
   <nz-layout>
-    <nz-header>
-      @if(!isLargeScreen){
-      <span
-        class="trigger"
-        nz-icon
-        [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
-        (click)="isCollapsed = !isCollapsed"
-      ></span>
-      } @if(isLargeScreen){
-      <div nz-flex [nzGap]="100" [nzAlign]="'center'">
+    <nz-sider
+      nzCollapsible
+      [nzCollapsed]="isLargeScreen ? true : isCollapsed"
+      [nzCollapsedWidth]="0"
+      [nzTrigger]="null"
+    >
+      <div nz-flex class="avatar-mobile" [nzJustify]="'center'">
         <nz-avatar
           nz-dropdown
           [nzDropdownMenu]="menu"
-          nzSrc="{{ user()?.picture }}"
-          [nzSize]="50"
+          nzSrc="{{
+            userDetails
+              ? userDetails.user_metadata.profile_image
+              : user()?.picture
+          }}"
+          nzSize="large"
           nzIcon="user"
-          class="avatar-desktop"
         ></nz-avatar>
         <nz-dropdown-menu #menu="nzDropdownMenu">
           <ul nz-menu nzSelectable>
@@ -83,26 +32,87 @@
             }
           </ul>
         </nz-dropdown-menu>
-        <ul nz-menu nzTheme="dark" nzMode="horizontal">
-          <li nz-menu-item routerLink="home" [nzMatchRouter]="true">Home</li>
-          @if(authenticated()){
-          <li nz-menu-item routerLink="profile" [nzMatchRouter]="true">
-            Profile
-          </li>
-          } @if(authenticated() && userRole=== 'Admin'){
-          <li nz-menu-item routerLink="admin-page" [nzMatchRouter]="true">
-            Admin Page
-          </li>
-          }
-        </ul>
       </div>
-      }
-    </nz-header>
-    <nz-content class="container">
-      <nz-breadcrumb [nzAutoGenerate]="true"> </nz-breadcrumb>
-      {{ user() | json }}
-      <router-outlet></router-outlet>
-    </nz-content>
-    <nz-footer>Footer ©2024</nz-footer>
+      <ul
+        nz-menu
+        [nzTheme]="'dark'"
+        [nzMode]="'inline'"
+        [nzInlineCollapsed]="isCollapsed"
+      >
+        <li nz-menu-item routerLink="home" [nzMatchRouter]="true">
+          <span nz-icon nzType="home" nzTheme="outline"></span
+          ><span class="nav-text">Home</span>
+        </li>
+        @if(authenticated()){
+        <li nz-menu-item routerLink="profile" [nzMatchRouter]="true">
+          <span nz-icon nzType="export" nzTheme="outline"></span
+          ><span class="nav-text">Profile</span>
+        </li>
+        } @if(authenticated() && userRole=== 'Admin'){
+        <li nz-menu-item routerLink="admin-page" [nzMatchRouter]="true">
+          <span nz-icon nzType="user" nzTheme="outline"></span>
+          <span class="nav-text">Admin Page</span>
+        </li>
+        }
+      </ul>
+    </nz-sider>
+    <nz-layout>
+      <nz-header>
+        @if(!isLargeScreen){
+        <span
+          class="trigger"
+          nz-icon
+          [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+          (click)="isCollapsed = !isCollapsed"
+        ></span>
+        } @if(isLargeScreen){
+        <div nz-flex [nzGap]="100" [nzAlign]="'center'">
+          <nz-avatar
+            nz-dropdown
+            [nzDropdownMenu]="menu"
+            nzSrc="{{
+              userDetails
+                ? userDetails.user_metadata.profile_image
+                : user()?.picture
+            }}"
+            [nzSize]="50"
+            nzIcon="user"
+            class="avatar-desktop"
+          ></nz-avatar>
+          <nz-dropdown-menu #menu="nzDropdownMenu">
+            <ul nz-menu nzSelectable>
+              @if(authenticated()){
+              <li nz-menu-item nzDanger (click)="doLogout()">
+                <span nz-icon nzType="logout" nzTheme="outline"></span> Logout
+              </li>
+              }@else {
+              <li nz-menu-item (click)="doLogin()">
+                <span nz-icon nzType="login" nzTheme="outline"></span>
+                Login/Signup
+              </li>
+              }
+            </ul>
+          </nz-dropdown-menu>
+          <ul nz-menu nzTheme="dark" nzMode="horizontal">
+            <li nz-menu-item routerLink="home" [nzMatchRouter]="true">Home</li>
+            @if(authenticated()){
+            <li nz-menu-item routerLink="profile" [nzMatchRouter]="true">
+              Profile
+            </li>
+            } @if(authenticated() && userRole=== 'Admin'){
+            <li nz-menu-item routerLink="admin-page" [nzMatchRouter]="true">
+              Admin Page
+            </li>
+            }
+          </ul>
+        </div>
+        }
+      </nz-header>
+      <nz-content class="container">
+        <nz-breadcrumb [nzAutoGenerate]="true"> </nz-breadcrumb>
+        <router-outlet></router-outlet>
+      </nz-content>
+      <nz-footer>Footer ©2024</nz-footer>
+    </nz-layout>
   </nz-layout>
-</nz-layout>
+</nz-spin>

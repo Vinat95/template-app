@@ -2,7 +2,7 @@ import { inject, Injectable } from "@angular/core";
 import { AuthService as Auth0Service } from "@auth0/auth0-angular";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { BehaviorSubject, Observable, of } from "rxjs";
-import { catchError, map } from "rxjs/operators";
+import { catchError, map, switchMap } from "rxjs/operators";
 import { DOCUMENT } from "@angular/common";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { jwtDecode } from "jwt-decode";
