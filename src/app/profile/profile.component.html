@@ -41,7 +41,7 @@
           <nz-upload
             nzListType="picture-card"
             [(nzFileList)]="fileList"
-            [nzShowButton]="fileList.length < 2"
+            [nzShowButton]="fileList.length < 1"
             [nzPreview]="handlePreview"
             (nzChange)="onChangeUpload($event)"
           >

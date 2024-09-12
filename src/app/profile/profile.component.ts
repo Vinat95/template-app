@@ -86,12 +86,15 @@ export default class ProfilepageComponent {
           email: res.data.email,
           nickname: res.data.user_metadata.nickname,
         });
-        this.fileList.push({
-          uid: "1",
-          name: "image." + res.data.picture.split(".").pop(),
-          status: "done",
-          url: res.data.picture,
-        });
+        this.fileList = [
+          ...this.fileList,
+          {
+            uid: "1",
+            name: "image." + res.data.picture.split(".").pop(),
+            status: "done",
+            url: res.data.picture,
+          },
+        ];
       },
       (error) => {
         this.spinner = false;
