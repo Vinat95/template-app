@@ -69,11 +69,11 @@ export class AuthService {
     const body = {
       client_id: "qnPQDHhKfJEZL8CfY0EdZpbEAWWaZo7D",
       email: email,
+      picture: profileImage,
       password: password,
       connection: "Username-Password-Authentication",
       user_metadata: {
         nickname: nickname,
-        profile_image: profileImage,
       },
     };
 

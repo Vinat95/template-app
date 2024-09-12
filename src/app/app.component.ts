@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, inject, OnInit } from "@angular/core";
+import { Component, inject, OnInit } from "@angular/core";
 import { CommonModule, DOCUMENT } from "@angular/common";
 import { RouterLink, RouterOutlet } from "@angular/router";
 import { ReactiveFormsModule } from "@angular/forms";
@@ -36,7 +36,7 @@ type Size = "xxl" | "xl" | "lg" | "md" | "sm" | "xs" | null;
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.css"],
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements OnInit {
   auth = inject(AuthService);
   http = inject(HttpClient);
   breakpointObserver = inject(BreakpointObserver);
@@ -63,24 +63,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.auth.handleRedirectCallback().subscribe((res) => {
       this.userRole = res[0];
     });
-  }
-
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      if (this.user()?.sub) {
-        this.spinner = true;
-        this.auth.getUserDetails(this.user()?.sub!).subscribe(
-          (res: any) => (this.userDetails = res.data),
-          (error) => {
-            console.log(error);
-            this.spinner = false;
-          },
-          () => {
-            this.spinner = false;
-          }
-        );
-      }
-    }, 500);
   }
 
   doLogin() {

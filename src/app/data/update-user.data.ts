@@ -5,5 +5,6 @@ export interface UserMetadata {
 
 export interface UserAuth {
   email: string;
+  picture: string;
   user_metadata: UserMetadata;
 }

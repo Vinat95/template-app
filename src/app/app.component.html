@@ -10,11 +10,7 @@
         <nz-avatar
           nz-dropdown
           [nzDropdownMenu]="menu"
-          nzSrc="{{
-            userDetails
-              ? userDetails.user_metadata.profile_image
-              : user()?.picture
-          }}"
+          nzSrc="{{ user()?.picture }}"
           nzSize="large"
           nzIcon="user"
         ></nz-avatar>
@@ -70,11 +66,7 @@
           <nz-avatar
             nz-dropdown
             [nzDropdownMenu]="menu"
-            nzSrc="{{
-              userDetails
-                ? userDetails.user_metadata.profile_image
-                : user()?.picture
-            }}"
+            nzSrc="{{ user()?.picture }}"
             [nzSize]="50"
             nzIcon="user"
             class="avatar-desktop"
