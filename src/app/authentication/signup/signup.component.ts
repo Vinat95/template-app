@@ -13,10 +13,7 @@ import { NzInputModule } from "ng-zorro-antd/input";
 import { ReactiveFormsModule } from "@angular/forms";
 import { NzAlertModule } from "ng-zorro-antd/alert";
 import { NzSpinModule } from "ng-zorro-antd/spin";
-import {
-  NzUploadChangeParam,
-  NzUploadModule,
-} from "ng-zorro-antd/upload";
+import { NzUploadChangeParam, NzUploadModule } from "ng-zorro-antd/upload";
 import { NzModalModule } from "ng-zorro-antd/modal";
 import { NzIconModule } from "ng-zorro-antd/icon";
 import { NzUploadFile } from "ng-zorro-antd/upload";
