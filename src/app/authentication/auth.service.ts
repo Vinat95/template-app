@@ -2,7 +2,7 @@ import { inject, Injectable } from "@angular/core";
 import { AuthService as Auth0Service } from "@auth0/auth0-angular";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { BehaviorSubject, Observable, of } from "rxjs";
-import { catchError, map, switchMap } from "rxjs/operators";
+import { catchError, map } from "rxjs/operators";
 import { DOCUMENT } from "@angular/common";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { jwtDecode } from "jwt-decode";
@@ -14,6 +14,8 @@ import { UserAuth } from "../data/update-user.data";
 export class AuthService {
   private userRoleSubject = new BehaviorSubject<any>(null);
   userRole$ = this.userRoleSubject.asObservable();
+  private profileImageSubject = new BehaviorSubject<string | null>(null);
+  profileImage$ = this.profileImageSubject.asObservable();
   auth = inject(Auth0Service);
   http = inject(HttpClient);
   document = inject(DOCUMENT);
@@ -69,7 +71,9 @@ export class AuthService {
     const body = {
       client_id: "qnPQDHhKfJEZL8CfY0EdZpbEAWWaZo7D",
       email: email,
-      picture: profileImage,
+      picture: profileImage
+        ? profileImage
+        : "https://profile-image-template-app.s3.amazonaws.com/avatar-profile.jpg",
       password: password,
       connection: "Username-Password-Authentication",
       user_metadata: {
@@ -98,5 +102,9 @@ export class AuthService {
 
   deleteImageFromS3Bucket(key: string) {
     return this.http.delete(`http://localhost:3001/upload/${key}`);
+  }
+
+  updateProfileImage(imageUrl: string) {
+    this.profileImageSubject.next(imageUrl);
   }
 }

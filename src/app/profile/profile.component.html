@@ -39,6 +39,7 @@
         </nz-form-control>
         <div class="clearfix">
           <nz-upload
+            formControlName="profileImage"
             nzListType="picture-card"
             [(nzFileList)]="fileList"
             [nzShowButton]="fileList.length < 1"

@@ -49,6 +49,7 @@ export class AppComponent implements OnInit {
   userRole: string = "";
   isLargeScreen: boolean = true;
   userDetails: any;
+  profileImageUrl: string = "";
 
   constructor() {}
 
@@ -62,6 +63,11 @@ export class AppComponent implements OnInit {
     //Role after login
     this.auth.handleRedirectCallback().subscribe((res) => {
       this.userRole = res[0];
+    });
+    this.auth.profileImage$.subscribe((url) => {
+      this.profileImageUrl = url
+        ? url
+        : "https://profile-image-template-app.s3.amazonaws.com/avatar-profile.jpg";
     });
   }
 

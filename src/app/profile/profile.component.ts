@@ -24,6 +24,7 @@ import { Router } from "@angular/router";
 import { AuthService } from "../authentication/auth.service";
 import { AuthService as Auth0Service } from "@auth0/auth0-angular";
 import { UserAuth } from "../data/update-user.data";
+import { switchMap, tap } from "rxjs";
 
 const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
   new Promise((resolve, reject) => {
@@ -65,7 +66,7 @@ export default class ProfilepageComponent {
   user: UserAuth = {
     email: "",
     picture: "",
-    user_metadata: { nickname: "", profile_image: "" },
+    user_metadata: { nickname: "" },
   };
   validateForm: FormGroup<{
     email: FormControl<string>;
@@ -110,28 +111,46 @@ export default class ProfilepageComponent {
     if (this.validateForm.valid) {
       this.populateBodyUpdateUser();
       this.spinner = true;
-      this.auth.updateUserDetails(this.auth.user()?.sub!, this.user).subscribe(
-        (res) => {
-          this.showAlert = true;
-          this.typeAlert = "success";
-          this.messageAlert = "Signup successful";
-          setTimeout(() => {
-            this.router.navigate(["home"]);
-          }, 3000);
-        },
-        (error) => {
-          this.spinner = false;
-          this.showAlert = true;
-          this.typeAlert = "error";
-          this.messageAlert = error.error.error.message
-            ? error.error.error.message
-            : error.error.description;
-          console.log(error);
-        },
-        () => {
-          this.spinner = false;
-        }
-      );
+      this.auth
+        .uploadImageToS3Bucket(this.formData)
+        .pipe(
+          tap((res: any) => {
+            this.populateProfileImage(res.url);
+          }),
+          switchMap(() => {
+            return this.auth.updateUserDetails(
+              this.auth.user()?.sub!,
+              this.user
+            );
+          })
+        )
+        .subscribe(
+          (res) => {
+            this.showAlert = true;
+            this.typeAlert = "success";
+            this.messageAlert = "Signup successful";
+            this.auth.updateProfileImage(
+              this.user.picture
+                ? this.user.picture
+                : "https://profile-image-template-app.s3.amazonaws.com/avatar-profile.jpg"
+            );
+            setTimeout(() => {
+              this.router.navigate(["home"]);
+            }, 3000);
+          },
+          (error) => {
+            this.spinner = false;
+            this.showAlert = true;
+            this.typeAlert = "error";
+            this.messageAlert = error.error.error.message
+              ? error.error.error.message
+              : error.error.description;
+            console.log(error);
+          },
+          () => {
+            this.spinner = false;
+          }
+        );
     } else {
       Object.values(this.validateForm.controls).forEach((control) => {
         if (control.invalid) {
@@ -149,6 +168,12 @@ export default class ProfilepageComponent {
     this.user.user_metadata.nickname = this.validateForm.get("nickname")
       ? this.validateForm.get("nickname")?.value!
       : "";
+  }
+
+  populateProfileImage(url: string) {
+    this.user.picture = url
+      ? url
+      : "https://profile-image-template-app.s3.amazonaws.com/avatar-profile.jpg";
   }
 
   resetForm() {
