@@ -191,10 +191,12 @@ export default class ProfilepageComponent {
   onChangeUpload(event: NzUploadChangeParam) {
     if (event.type === "removed") {
       this.formData = new FormData();
+      this.validateForm.get('profileImage')?.markAsDirty();
     }
     if (event.type === "error") {
       const file = event.file.originFileObj as File;
       this.formData.append("file", file);
+      this.validateForm.get('profileImage')?.markAsDirty();
     }
   }
 

@@ -64,11 +64,14 @@ export class AppComponent implements OnInit {
     this.auth.handleRedirectCallback().subscribe((res) => {
       this.userRole = res[0];
     });
-    this.auth.profileImage$.subscribe((url) => {
-      this.profileImageUrl = url
-        ? url
-        : "https://profile-image-template-app.s3.amazonaws.com/avatar-profile.jpg";
-    });
+    this.auth.profileImage$.subscribe(
+      (url) => {
+        this.profileImageUrl = url ? url : "";
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
   }
 
   doLogin() {
@@ -77,5 +80,14 @@ export class AppComponent implements OnInit {
 
   doLogout() {
     this.auth.doLogout();
+  }
+
+  getProfileImage(): string {
+    if (!this.auth.authenticated())
+      return "https://profile-image-template-app.s3.amazonaws.com/avatar-profile.jpg";
+    else {
+      if (this.profileImageUrl) return this.profileImageUrl;
+      else return this.auth.user()?.picture!;
+    }
   }
 }

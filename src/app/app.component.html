@@ -10,7 +10,7 @@
         <nz-avatar
           nz-dropdown
           [nzDropdownMenu]="menu"
-          [nzSrc]="profileImageUrl"
+          [nzSrc]="getProfileImage()"
           nzSize="large"
           nzIcon="user"
         ></nz-avatar>
@@ -66,7 +66,7 @@
           <nz-avatar
             nz-dropdown
             [nzDropdownMenu]="menu"
-            [nzSrc]="profileImageUrl"
+            [nzSrc]="getProfileImage()"
             [nzSize]="50"
             nzIcon="user"
             class="avatar-desktop"
