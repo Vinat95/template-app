@@ -24,7 +24,7 @@ import { Router } from "@angular/router";
 import { AuthService } from "../authentication/auth.service";
 import { AuthService as Auth0Service } from "@auth0/auth0-angular";
 import { UserAuth } from "../data/update-user.data";
-import { switchMap, tap } from "rxjs";
+import { Observable, switchMap, tap } from "rxjs";
 
 const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
   new Promise((resolve, reject) => {
@@ -55,14 +55,18 @@ export default class ProfilepageComponent {
   router = inject(Router);
   auth = inject(AuthService);
   auth0 = inject(Auth0Service);
+  submit$: Observable<any> = new Observable();
   typeAlert: "error" | "info" | "success" | "warning" = "success";
   formData: FormData = new FormData();
+  image_key: string = "";
+  profileImageUrl: string = "";
   messageAlert: string = "";
   showAlert = false;
   spinner = false;
   fileList: NzUploadFile[] = [];
   previewImage: string | undefined = "";
   previewVisible = false;
+  emptiedProfileImage = false;
   user: UserAuth = {
     email: "",
     picture: "",
@@ -110,10 +114,63 @@ export default class ProfilepageComponent {
   submitForm(): void {
     if (this.validateForm.valid) {
       this.populateBodyUpdateUser();
+      this.buildObservable();
       this.spinner = true;
-      this.auth
-        .uploadImageToS3Bucket(this.formData)
-        .pipe(
+      this.submit$.subscribe(
+        (res) => {
+          this.showAlert = true;
+          this.typeAlert = "success";
+          this.messageAlert = "Signup successful";
+          this.auth.updateProfileImage(
+            this.user.picture
+              ? this.user.picture
+              : "https://profile-image-template-app.s3.amazonaws.com/avatar-profile.jpg"
+          );
+          setTimeout(() => {
+            this.router.navigate(["home"]);
+          }, 3000);
+        },
+        (error) => {
+          this.spinner = false;
+          this.showAlert = true;
+          this.typeAlert = "error";
+          this.messageAlert = error.error.error.message
+            ? error.error.error.message
+            : error.error.description;
+          console.log(error);
+        },
+        () => {
+          this.spinner = false;
+        }
+      );
+    } else {
+      Object.values(this.validateForm.controls).forEach((control) => {
+        if (control.invalid) {
+          control.markAsDirty();
+          control.updateValueAndValidity({ onlySelf: true });
+        }
+      });
+    }
+  }
+
+  buildObservable() {
+    this.auth.profileImage$.subscribe(
+      (url) => {
+        this.profileImageUrl = url ? url : "";
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+    if (this.emptiedProfileImage) {
+      this.image_key = this.profileImageUrl
+        ? this.profileImageUrl.split("/")[3]
+        : this.auth.user()?.picture!.split("/")[3]!;
+      if (this.image_key !== "avatar-profile.jpg") {
+        this.submit$ = this.auth.deleteImageFromS3Bucket(this.image_key).pipe(
+          switchMap(() => {
+            return this.auth.uploadImageToS3Bucket(this.formData);
+          }),
           tap((res: any) => {
             this.populateProfileImage(res.url);
           }),
@@ -123,41 +180,29 @@ export default class ProfilepageComponent {
               this.user
             );
           })
-        )
-        .subscribe(
-          (res) => {
-            this.showAlert = true;
-            this.typeAlert = "success";
-            this.messageAlert = "Signup successful";
-            this.auth.updateProfileImage(
-              this.user.picture
-                ? this.user.picture
-                : "https://profile-image-template-app.s3.amazonaws.com/avatar-profile.jpg"
-            );
-            setTimeout(() => {
-              this.router.navigate(["home"]);
-            }, 3000);
-          },
-          (error) => {
-            this.spinner = false;
-            this.showAlert = true;
-            this.typeAlert = "error";
-            this.messageAlert = error.error.error.message
-              ? error.error.error.message
-              : error.error.description;
-            console.log(error);
-          },
-          () => {
-            this.spinner = false;
-          }
         );
+      } else {
+        this.submit$ = this.auth.uploadImageToS3Bucket(this.formData).pipe(
+          tap((res: any) => {
+            this.populateProfileImage(res.url);
+          }),
+          switchMap(() => {
+            return this.auth.updateUserDetails(
+              this.auth.user()?.sub!,
+              this.user
+            );
+          })
+        );
+      }
     } else {
-      Object.values(this.validateForm.controls).forEach((control) => {
-        if (control.invalid) {
-          control.markAsDirty();
-          control.updateValueAndValidity({ onlySelf: true });
-        }
-      });
+      this.submit$ = this.auth.uploadImageToS3Bucket(this.formData).pipe(
+        tap((res: any) => {
+          this.populateProfileImage(res.url);
+        }),
+        switchMap(() => {
+          return this.auth.updateUserDetails(this.auth.user()?.sub!, this.user);
+        })
+      );
     }
   }
 
@@ -191,12 +236,13 @@ export default class ProfilepageComponent {
   onChangeUpload(event: NzUploadChangeParam) {
     if (event.type === "removed") {
       this.formData = new FormData();
-      this.validateForm.get('profileImage')?.markAsDirty();
+      this.emptiedProfileImage = true;
+      this.validateForm.get("profileImage")?.markAsDirty();
     }
     if (event.type === "error") {
       const file = event.file.originFileObj as File;
       this.formData.append("file", file);
-      this.validateForm.get('profileImage')?.markAsDirty();
+      this.validateForm.get("profileImage")?.markAsDirty();
     }
   }
 
