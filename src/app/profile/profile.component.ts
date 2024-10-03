@@ -87,8 +87,11 @@ export default class ProfilepageComponent {
     this.spinner = true;
     this.auth.getUserDetails(this.auth.user()?.sub!).subscribe(
       (res: any) => {
+        this.populateProfileImage(res.data.picture);
+        this.auth.updateProfileImage(res.data.picture);
         this.validateForm.patchValue({
           email: res.data.email,
+          profileImage: res.data.picture,
           nickname: res.data.user_metadata.nickname,
         });
         this.fileList = [
@@ -195,14 +198,9 @@ export default class ProfilepageComponent {
         );
       }
     } else {
-      this.submit$ = this.auth.getUserDetails(this.auth.user()?.sub!).pipe(
-        tap((res: any) => {
-          this.populateProfileImage(res.data.picture);
-          this.auth.updateProfileImage(res.data.picture);
-        }),
-        switchMap(() => {
-          return this.auth.updateUserDetails(this.auth.user()?.sub!, this.user);
-        })
+      this.submit$ = this.auth.updateUserDetails(
+        this.auth.user()?.sub!,
+        this.user
       );
     }
   }
