@@ -195,9 +195,10 @@ export default class ProfilepageComponent {
         );
       }
     } else {
-      this.submit$ = this.auth.uploadImageToS3Bucket(this.formData).pipe(
+      this.submit$ = this.auth.getUserDetails(this.auth.user()?.sub!).pipe(
         tap((res: any) => {
-          this.populateProfileImage(res.url);
+          this.populateProfileImage(res.data.picture);
+          this.auth.updateProfileImage(res.data.picture);
         }),
         switchMap(() => {
           return this.auth.updateUserDetails(this.auth.user()?.sub!, this.user);
