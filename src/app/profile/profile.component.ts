@@ -116,6 +116,7 @@ export default class ProfilepageComponent {
 
   submitForm(): void {
     if (this.validateForm.valid) {
+      this.validateForm.markAsPristine();
       this.populateBodyUpdateUser();
       this.buildObservable();
       this.spinner = true;
