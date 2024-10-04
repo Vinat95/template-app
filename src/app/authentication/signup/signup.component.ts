@@ -173,6 +173,31 @@ export default class NotAuthorizedComponent {
     }
   }
 
+  beforeUploadImage = (file: NzUploadFile): boolean => {
+    const isLt100kb = file.size! / 1024 < 100; //100Kb
+    const isJpeg = file.type === 'image/jpeg';
+
+    if (!isJpeg) {
+      this.showAlert = true;
+      this.typeAlert = "error";
+      this.messageAlert =
+        "Il file deve essere in formato JPEG.";
+      return false;
+    }
+
+    if (!isLt100kb) {
+      this.showAlert = true;
+      this.typeAlert = "error";
+      this.messageAlert =
+        "La dimensione del file non deve superare i 100 KB.";
+      return false;
+    }
+
+    this.showAlert = false;
+    this.messageAlert = "";
+    return true;
+  };
+
   goToHome() {
     this.router.navigate(["home"]);
   }

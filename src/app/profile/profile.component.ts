@@ -140,7 +140,6 @@ export default class ProfilepageComponent {
           this.messageAlert = error.error.error.message
             ? error.error.error.message
             : error.error.description;
-          console.log(error);
         },
         () => {
           this.spinner = false;
@@ -232,6 +231,31 @@ export default class ProfilepageComponent {
     this.previewVisible = true;
   };
 
+  beforeUploadImage = (file: NzUploadFile): boolean => {
+    const isLt100kb = file.size! / 1024 < 100; //100Kb
+    const isJpeg = file.type === 'image/jpeg';
+
+    if (!isJpeg) {
+      this.showAlert = true;
+      this.typeAlert = "error";
+      this.messageAlert =
+        "Il file deve essere in formato JPEG.";
+      return false;
+    }
+
+    if (!isLt100kb) {
+      this.showAlert = true;
+      this.typeAlert = "error";
+      this.messageAlert =
+        "La dimensione del file non deve superare i 100 KB.";
+      return false;
+    }
+
+    this.showAlert = false;
+    this.messageAlert = "";
+    return true;
+  };
+
   onChangeUpload(event: NzUploadChangeParam) {
     if (event.type === "removed") {
       this.formData = new FormData();
@@ -239,6 +263,7 @@ export default class ProfilepageComponent {
       this.validateForm.get("profileImage")?.markAsDirty();
     }
     if (event.type === "error") {
+      console.log("err");
       const file = event.file.originFileObj as File;
       this.formData.append("file", file);
       this.validateForm.get("profileImage")?.markAsDirty();

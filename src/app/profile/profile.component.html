@@ -43,6 +43,7 @@
             [(nzFileList)]="fileList"
             [nzShowButton]="fileList.length < 1"
             [nzPreview]="handlePreview"
+            [nzBeforeUpload]="beforeUploadImage"
             (nzChange)="onChangeUpload($event)"
           >
             <div>
