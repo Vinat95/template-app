@@ -137,9 +137,9 @@ export default class ProfilepageComponent {
           this.spinner = false;
           this.showAlert = true;
           this.typeAlert = "error";
-          this.messageAlert = error.error.error.message
-            ? error.error.error.message
-            : error.error.description;
+          this.messageAlert = error && error.error.message
+            ? error.error.message
+            : error.error.error.message;
         },
         () => {
           this.spinner = false;
@@ -169,12 +169,12 @@ export default class ProfilepageComponent {
         ? this.profileImageUrl.split("/")[3]
         : this.auth.user()?.picture!.split("/")[3]!;
       if (this.image_key !== "avatar-profile.jpg") {
-        this.submit$ = this.auth.deleteImageFromS3Bucket(this.image_key).pipe(
-          switchMap(() => {
-            return this.auth.uploadImageToS3Bucket(this.formData);
-          }),
+        this.submit$ = this.auth.uploadImageToS3Bucket(this.formData).pipe(
           tap((res: any) => {
             this.populateProfileImage(res.url);
+          }),
+          switchMap(() => {
+            return this.auth.deleteImageFromS3Bucket(this.image_key);
           }),
           switchMap(() => {
             return this.auth.updateUserDetails(
