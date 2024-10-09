@@ -135,12 +135,11 @@ export default class ProfilepageComponent {
           }, 3000);
         },
         (error) => {
+          console.log(error)
           this.spinner = false;
           this.showAlert = true;
           this.typeAlert = "error";
-          this.messageAlert = error && error.error.message
-            ? error.error.message
-            : error.error.error.message;
+          this.messageAlert = error.error.message
         },
         () => {
           this.spinner = false;
