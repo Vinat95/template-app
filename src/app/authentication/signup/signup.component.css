@@ -1,11 +1,12 @@
-[nz-form] {
-    max-width: 600px;
-  }
+.ant-select.ant-select-in-form-item.phone-select {
+  width: 70px;
+}
 
-  .ant-select.ant-select-in-form-item.phone-select {
-    width: 70px;
-  }
+.upload-container {
+  display: flex;
+  justify-content: center;
+}
 
-  .register-area {
-    margin-bottom: 8px;
-  }
+.ant-upload-picture-card-wrapper {
+  width: unset !important;
+}

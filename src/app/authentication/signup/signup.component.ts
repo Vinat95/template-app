@@ -21,6 +21,8 @@ import { Router } from "@angular/router";
 import { AuthService } from "../auth.service";
 import { switchMap, tap } from "rxjs";
 import { UserRegister } from "../../data/update-user.data";
+import { NzFlexModule } from "ng-zorro-antd/flex";
+import { NzButtonModule } from "ng-zorro-antd/button";
 
 const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
   new Promise((resolve, reject) => {
@@ -35,6 +37,7 @@ const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
   standalone: true,
   imports: [
     CommonModule,
+    NzButtonModule,
     NzFormModule,
     NzInputModule,
     ReactiveFormsModule,
@@ -43,6 +46,7 @@ const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
     NzUploadModule,
     NzModalModule,
     NzIconModule,
+    NzFlexModule,
   ],
   templateUrl: "./signup.component.html",
   styleUrls: ["./signup.component.css"],
