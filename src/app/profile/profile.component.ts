@@ -1,20 +1,20 @@
 import { Component, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import {
-  AbstractControl,
   FormControl,
   FormGroup,
   NonNullableFormBuilder,
   ReactiveFormsModule,
-  ValidatorFn,
   Validators,
 } from "@angular/forms";
 import { NzAlertModule } from "ng-zorro-antd/alert";
+import { NzFlexModule } from "ng-zorro-antd/flex";
 import { NzFormModule } from "ng-zorro-antd/form";
 import { NzIconModule } from "ng-zorro-antd/icon";
 import { NzInputModule } from "ng-zorro-antd/input";
 import { NzModalModule } from "ng-zorro-antd/modal";
 import { NzSpinModule } from "ng-zorro-antd/spin";
+import { NzButtonModule } from "ng-zorro-antd/button";
 import {
   NzUploadChangeParam,
   NzUploadFile,
@@ -41,6 +41,8 @@ const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
     CommonModule,
     NzFormModule,
     NzInputModule,
+    NzFlexModule,
+    NzButtonModule,
     ReactiveFormsModule,
     NzAlertModule,
     NzSpinModule,
@@ -135,11 +137,11 @@ export default class ProfilepageComponent {
           }, 3000);
         },
         (error) => {
-          console.log(error)
+          console.log(error);
           this.spinner = false;
           this.showAlert = true;
           this.typeAlert = "error";
-          this.messageAlert = error.error.message
+          this.messageAlert = error.error.message;
         },
         () => {
           this.spinner = false;
@@ -233,21 +235,19 @@ export default class ProfilepageComponent {
 
   beforeUploadImage = (file: NzUploadFile): boolean => {
     const isLt100kb = file.size! / 1024 < 100; //100Kb
-    const isJpeg = file.type === 'image/jpeg';
+    const isJpeg = file.type === "image/jpeg";
 
     if (!isJpeg) {
       this.showAlert = true;
       this.typeAlert = "error";
-      this.messageAlert =
-        "Il file deve essere in formato JPEG.";
+      this.messageAlert = "Il file deve essere in formato JPEG.";
       return false;
     }
 
     if (!isLt100kb) {
       this.showAlert = true;
       this.typeAlert = "error";
-      this.messageAlert =
-        "La dimensione del file non deve superare i 100 KB.";
+      this.messageAlert = "La dimensione del file non deve superare i 100 KB.";
       return false;
     }
 
