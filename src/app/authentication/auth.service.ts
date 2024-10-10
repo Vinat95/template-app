@@ -6,7 +6,7 @@ import { catchError, map } from "rxjs/operators";
 import { DOCUMENT } from "@angular/common";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { jwtDecode } from "jwt-decode";
-import { UserAuth } from "../data/update-user.data";
+import { UserAuth, UserRegister } from "../data/update-user.data";
 
 @Injectable({
   providedIn: "root",
@@ -62,30 +62,8 @@ export class AuthService {
     return this.userRole;
   }
 
-  registerUser(
-    email: string,
-    password: string,
-    nickname: string,
-    profileImage: string
-  ) {
-    const body = {
-      client_id: "qnPQDHhKfJEZL8CfY0EdZpbEAWWaZo7D",
-      email: email,
-      picture: profileImage
-        ? profileImage
-        : "https://profile-image-template-app.s3.amazonaws.com/avatar-profile.jpg",
-      password: password,
-      connection: "Username-Password-Authentication",
-      user_metadata: {
-        nickname: nickname,
-      },
-    };
-
-    return this.http.post(this.auth0UrlSignUp, body, {
-      headers: new HttpHeaders({
-        "Content-Type": "application/json",
-      }),
-    });
+  registerUser(body: UserRegister) {
+    return this.http.post(`http://localhost:3001/register/`, body);
   }
 
   getUserDetails(user_id: string) {

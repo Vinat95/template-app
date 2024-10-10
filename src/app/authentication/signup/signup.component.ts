@@ -19,7 +19,8 @@ import { NzIconModule } from "ng-zorro-antd/icon";
 import { NzUploadFile } from "ng-zorro-antd/upload";
 import { Router } from "@angular/router";
 import { AuthService } from "../auth.service";
-import { switchMap } from "rxjs";
+import { switchMap, tap } from "rxjs";
+import { UserRegister } from "../../data/update-user.data";
 
 const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
   new Promise((resolve, reject) => {
@@ -57,6 +58,12 @@ export default class NotAuthorizedComponent {
   fileList: NzUploadFile[] = [];
   previewImage: string | undefined = "";
   previewVisible = false;
+  user: UserRegister = {
+    email: "",
+    password: "",
+    picture: "",
+    user_metadata: { nickname: "" },
+  };
   validateForm: FormGroup<{
     email: FormControl<string>;
     password: FormControl<string>;
@@ -77,18 +84,16 @@ export default class NotAuthorizedComponent {
 
   submitForm(): void {
     if (this.validateForm.valid) {
+      this.validateForm.markAsPristine();
+      this.populateBodyUserRegister();
       this.spinner = true;
       this.auth
         .uploadImageToS3Bucket(this.formData)
         .pipe(
-          switchMap((res: any) =>
-            this.auth.registerUser(
-              this.validateForm.get("email")?.value!,
-              this.validateForm.get("password")?.value!,
-              this.validateForm.get("nickname")?.value!,
-              res.url
-            )
-          )
+          tap((res: any) => {
+            this.populateProfileImage(res.url);
+          }),
+          switchMap((res: any) => this.auth.registerUser(this.user))
         )
         .subscribe(
           (next) => {
@@ -119,6 +124,24 @@ export default class NotAuthorizedComponent {
         }
       });
     }
+  }
+
+  populateBodyUserRegister() {
+    this.user.email = this.validateForm.get("email")
+      ? this.validateForm.get("email")?.value!
+      : "";
+    this.user.password = this.validateForm.get("password")
+      ? this.validateForm.get("password")?.value!
+      : "";
+    this.user.user_metadata.nickname = this.validateForm.get("nickname")
+      ? this.validateForm.get("nickname")?.value!
+      : "";
+  }
+
+  populateProfileImage(url: string) {
+    this.user.picture = url
+      ? url
+      : "https://profile-image-template-app.s3.amazonaws.com/avatar-profile.jpg";
   }
 
   updateConfirmValidator(): void {
@@ -175,21 +198,19 @@ export default class NotAuthorizedComponent {
 
   beforeUploadImage = (file: NzUploadFile): boolean => {
     const isLt100kb = file.size! / 1024 < 100; //100Kb
-    const isJpeg = file.type === 'image/jpeg';
+    const isJpeg = file.type === "image/jpeg";
 
     if (!isJpeg) {
       this.showAlert = true;
       this.typeAlert = "error";
-      this.messageAlert =
-        "Il file deve essere in formato JPEG.";
+      this.messageAlert = "Il file deve essere in formato JPEG.";
       return false;
     }
 
     if (!isLt100kb) {
       this.showAlert = true;
       this.typeAlert = "error";
-      this.messageAlert =
-        "La dimensione del file non deve superare i 100 KB.";
+      this.messageAlert = "La dimensione del file non deve superare i 100 KB.";
       return false;
     }
 

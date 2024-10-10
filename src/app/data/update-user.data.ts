@@ -7,3 +7,10 @@ export interface UserAuth {
   picture?: string;
   user_metadata: UserMetadata;
 }
+
+export interface UserRegister {
+  email: string;
+  picture?: string;
+  password: string;
+  user_metadata: UserMetadata;
+}
