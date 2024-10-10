@@ -53,6 +53,7 @@ export default class NotAuthorizedComponent {
   typeAlert: "error" | "info" | "success" | "warning" = "success";
   formData: FormData = new FormData();
   messageAlert: string = "";
+  image_key: string = "";
   showAlert = false;
   spinner = false;
   fileList: NzUploadFile[] = [];
@@ -105,6 +106,14 @@ export default class NotAuthorizedComponent {
             }, 3000);
           },
           (error) => {
+            if (
+              this.user.picture &&
+              this.user.picture !==
+                "https://profile-image-template-app.s3.amazonaws.com/avatar-profile.jpg"
+            ) {
+              this.image_key = this.user.picture!.split("/")[3];
+              this.auth.deleteImageFromS3Bucket(this.image_key).subscribe();
+            }
             this.showAlert = true;
             this.typeAlert = "error";
             this.messageAlert = error.error.message
