@@ -9,7 +9,6 @@
     ></nz-alert>
     <div class="upload-container" nz-flex [nzAlign]="'center'">
       <nz-upload
-        formControlName="profileImage"
         nzListType="picture-card"
         [(nzFileList)]="fileList"
         [nzShowButton]="fileList.length < 1"
@@ -94,7 +93,7 @@
                 nz-button
                 nzType="primary"
                 type="submit"
-                [disabled]="validateForm.pristine"
+                [disabled]="validateForm.pristine || validateForm.invalid"
               >
                 Update
               </button>

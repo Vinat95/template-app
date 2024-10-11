@@ -89,6 +89,7 @@ export default class NotAuthorizedComponent {
 
   submitForm(): void {
     if (this.validateForm.valid) {
+      this.showAlert = false;
       this.validateForm.markAsUntouched();
       this.populateBodyUserRegister();
       this.spinner = true;

@@ -119,6 +119,7 @@ export default class ProfilepageComponent {
   submitForm(): void {
     if (this.validateForm.valid) {
       this.validateForm.markAsUntouched();
+      this.showAlert = false;
       this.populateBodyUpdateUser();
       this.buildObservable();
       this.spinner = true;

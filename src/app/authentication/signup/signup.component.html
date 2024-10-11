@@ -138,7 +138,7 @@
                 nz-button
                 nzType="primary"
                 type="submit"
-                [disabled]="validateForm.pristine"
+                [disabled]="validateForm.pristine || validateForm.invalid"
               >
                 Register
               </button>
