@@ -89,7 +89,7 @@ export default class NotAuthorizedComponent {
 
   submitForm(): void {
     if (this.validateForm.valid) {
-      this.validateForm.markAsPristine();
+      this.validateForm.markAsUntouched();
       this.populateBodyUserRegister();
       this.spinner = true;
       this.auth
@@ -212,6 +212,7 @@ export default class NotAuthorizedComponent {
   beforeUploadImage = (file: NzUploadFile): boolean => {
     const isLt100kb = file.size! / 1024 < 100; //100Kb
     const isJpeg = file.type === "image/jpeg";
+    this.validateForm.markAsUntouched();
 
     if (!isJpeg) {
       this.showAlert = true;

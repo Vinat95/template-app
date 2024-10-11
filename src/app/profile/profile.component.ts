@@ -118,7 +118,7 @@ export default class ProfilepageComponent {
 
   submitForm(): void {
     if (this.validateForm.valid) {
-      this.validateForm.markAsPristine();
+      this.validateForm.markAsUntouched();
       this.populateBodyUpdateUser();
       this.buildObservable();
       this.spinner = true;
@@ -126,7 +126,7 @@ export default class ProfilepageComponent {
         (res) => {
           this.showAlert = true;
           this.typeAlert = "success";
-          this.messageAlert = "Signup successful";
+          this.messageAlert = "Edit profile successful";
           this.auth.updateProfileImage(
             this.user.picture
               ? this.user.picture
@@ -236,6 +236,7 @@ export default class ProfilepageComponent {
   beforeUploadImage = (file: NzUploadFile): boolean => {
     const isLt100kb = file.size! / 1024 < 100; //100Kb
     const isJpeg = file.type === "image/jpeg";
+    this.validateForm.markAsUntouched();
 
     if (!isJpeg) {
       this.showAlert = true;
@@ -263,7 +264,6 @@ export default class ProfilepageComponent {
       this.validateForm.get("profileImage")?.markAsDirty();
     }
     if (event.type === "error") {
-      console.log("err");
       const file = event.file.originFileObj as File;
       this.formData.append("file", file);
       this.validateForm.get("profileImage")?.markAsDirty();
