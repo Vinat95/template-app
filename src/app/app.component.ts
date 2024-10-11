@@ -14,6 +14,7 @@ import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from "./authentication/auth.service";
 import { switchMap, tap } from "rxjs";
+import { LoadingService } from "./loading.service";
 
 type Size = "xxl" | "xl" | "lg" | "md" | "sm" | "xs" | null;
 
@@ -52,7 +53,11 @@ export class AppComponent implements OnInit {
   userDetails: any;
   profileImageUrl: string = "";
 
-  constructor() {}
+  constructor(private loadingService: LoadingService) {
+    this.loadingService.loading$.subscribe(
+      (loading) => (this.spinner = loading)
+    );
+  }
 
   ngOnInit() {
     //Responsive layout

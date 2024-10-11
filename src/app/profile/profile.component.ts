@@ -25,6 +25,7 @@ import { AuthService } from "../authentication/auth.service";
 import { AuthService as Auth0Service } from "@auth0/auth0-angular";
 import { UserAuth } from "../data/update-user.data";
 import { Observable, switchMap, tap } from "rxjs";
+import { LoadingService } from "../loading.service";
 
 const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
   new Promise((resolve, reject) => {
@@ -64,7 +65,6 @@ export default class ProfilepageComponent {
   profileImageUrl: string = "";
   messageAlert: string = "";
   showAlert = false;
-  spinner = false;
   fileList: NzUploadFile[] = [];
   previewImage: string | undefined = "";
   previewVisible = false;
@@ -80,13 +80,16 @@ export default class ProfilepageComponent {
     profileImage: FormControl<string>;
   }>;
 
-  constructor(private fb: NonNullableFormBuilder) {
+  constructor(
+    private fb: NonNullableFormBuilder,
+    private loadingService: LoadingService
+  ) {
     this.validateForm = this.fb.group({
       email: ["", [Validators.email, Validators.required]],
       nickname: ["", [Validators.required]],
       profileImage: [""],
     });
-    this.spinner = true;
+    this.loadingService.show();
     this.auth.getUserDetails(this.auth.user()?.sub!).subscribe(
       (res: any) => {
         this.populateProfileImage(res.data.picture);
@@ -107,11 +110,11 @@ export default class ProfilepageComponent {
         ];
       },
       (error) => {
-        this.spinner = false;
+        this.loadingService.hide();
         console.log(error);
       },
       () => {
-        this.spinner = false;
+        this.loadingService.hide();
       }
     );
   }
@@ -122,7 +125,7 @@ export default class ProfilepageComponent {
       this.showAlert = false;
       this.populateBodyUpdateUser();
       this.buildObservable();
-      this.spinner = true;
+      this.loadingService.show();
       this.submit$.subscribe(
         (res) => {
           this.showAlert = true;
@@ -139,13 +142,13 @@ export default class ProfilepageComponent {
         },
         (error) => {
           console.log(error);
-          this.spinner = false;
+          this.loadingService.hide();
           this.showAlert = true;
           this.typeAlert = "error";
           this.messageAlert = error.error.message;
         },
         () => {
-          this.spinner = false;
+          this.loadingService.hide();
         }
       );
     } else {
@@ -223,6 +226,7 @@ export default class ProfilepageComponent {
   }
 
   resetForm() {
+    this.showAlert = false;
     this.validateForm.reset();
   }
 

@@ -23,6 +23,7 @@ import { switchMap, tap } from "rxjs";
 import { UserRegister } from "../../data/update-user.data";
 import { NzFlexModule } from "ng-zorro-antd/flex";
 import { NzButtonModule } from "ng-zorro-antd/button";
+import { LoadingService } from "../../loading.service";
 
 const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
   new Promise((resolve, reject) => {
@@ -59,7 +60,6 @@ export default class NotAuthorizedComponent {
   messageAlert: string = "";
   image_key: string = "";
   showAlert = false;
-  spinner = false;
   fileList: NzUploadFile[] = [];
   previewImage: string | undefined = "";
   previewVisible = false;
@@ -77,7 +77,10 @@ export default class NotAuthorizedComponent {
     profileImage: FormControl<string>;
   }>;
 
-  constructor(private fb: NonNullableFormBuilder) {
+  constructor(
+    private fb: NonNullableFormBuilder,
+    private loadingService: LoadingService
+  ) {
     this.validateForm = this.fb.group({
       email: ["", [Validators.email, Validators.required]],
       password: ["", [Validators.required, this.passwordValidator]],
@@ -92,7 +95,7 @@ export default class NotAuthorizedComponent {
       this.showAlert = false;
       this.validateForm.markAsUntouched();
       this.populateBodyUserRegister();
-      this.spinner = true;
+      this.loadingService.show();
       this.auth
         .uploadImageToS3Bucket(this.formData)
         .pipe(
@@ -124,10 +127,10 @@ export default class NotAuthorizedComponent {
             this.messageAlert = error.error.message
               ? error.error.message
               : error.error.description;
-            this.spinner = false;
+            this.loadingService.hide();
           },
           () => {
-            this.spinner = false;
+            this.loadingService.hide();
           }
         );
     } else {
@@ -189,6 +192,7 @@ export default class NotAuthorizedComponent {
   };
 
   resetForm() {
+    this.showAlert = false;
     this.validateForm.reset();
   }
 
