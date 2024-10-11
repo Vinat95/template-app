@@ -13,6 +13,7 @@ import { NzDropDownModule } from "ng-zorro-antd/dropdown";
 import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from "./authentication/auth.service";
+import { switchMap, tap } from "rxjs";
 
 type Size = "xxl" | "xl" | "lg" | "md" | "sm" | "xs" | null;
 
@@ -61,17 +62,31 @@ export class AppComponent implements OnInit {
         this.isLargeScreen = result.matches;
       });
     //Role after login
-    this.auth.handleRedirectCallback().subscribe((res) => {
-      this.userRole = res[0];
-    });
-    this.auth.profileImage$.subscribe(
-      (url) => {
-        this.profileImageUrl = url ? url : "";
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
+    this.spinner = true;
+    this.auth
+      .handleRedirectCallback()
+      .pipe(
+        tap((res: any) => {
+          this.userRole = res[0][0];
+        }),
+        switchMap((res) => {
+          return this.auth.getUserDetails(res[1]);
+        }),
+        tap((res: any) => {
+          this.auth.updateProfileImage(res.data.picture);
+        }),
+        switchMap(() => this.auth.profileImage$)
+      )
+      .subscribe(
+        (url) => {
+          this.profileImageUrl = url ? url : "";
+          this.spinner = false;
+        },
+        (err) => {
+          console.log(err);
+          this.spinner = false;
+        }
+      );
   }
 
   doLogin() {
@@ -87,7 +102,7 @@ export class AppComponent implements OnInit {
       return "https://profile-image-template-app.s3.amazonaws.com/avatar-profile.jpg";
     else {
       if (this.profileImageUrl) return this.profileImageUrl;
-      else return this.auth.user()?.picture!;
+      else return "";
     }
   }
 }

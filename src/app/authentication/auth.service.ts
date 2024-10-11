@@ -23,8 +23,6 @@ export class AuthService {
   user = toSignal(this.auth.user$);
   jwt: string = "";
   userRole: Array<string> = [];
-  private auth0UrlSignUp =
-    "https://dev-lwot5qle50opfs87.eu.auth0.com/dbconnections/signup";
 
   doLogin() {
     this.auth.loginWithRedirect();
@@ -45,9 +43,10 @@ export class AuthService {
           this.jwt = claims.__raw;
           const decodedToken: any = jwtDecode(this.jwt);
           const roles = decodedToken["https://my-public-api/roles"];
+          const userId = decodedToken.sub;
           this.userRole = roles || [];
           this.userRoleSubject.next(roles);
-          return roles || [];
+          return [roles || [], userId];
         }
         return [];
       }),
