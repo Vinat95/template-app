@@ -35,17 +35,32 @@
         [nzMode]="'inline'"
         [nzInlineCollapsed]="isCollapsed"
       >
-        <li nz-menu-item routerLink="home" [nzMatchRouter]="true">
+        <li
+          nz-menu-item
+          routerLink="home"
+          [nzMatchRouter]="true"
+          (click)="isCollapsed = true"
+        >
           <span nz-icon nzType="home" nzTheme="outline"></span
           ><span class="nav-text">Home</span>
         </li>
         @if(authenticated()){
-        <li nz-menu-item routerLink="profile" [nzMatchRouter]="true">
+        <li
+          nz-menu-item
+          routerLink="profile"
+          [nzMatchRouter]="true"
+          (click)="isCollapsed = true"
+        >
           <span nz-icon nzType="export" nzTheme="outline"></span
           ><span class="nav-text">Profile</span>
         </li>
         } @if(authenticated() && userRole=== 'Admin'){
-        <li nz-menu-item routerLink="admin-page" [nzMatchRouter]="true">
+        <li
+          nz-menu-item
+          routerLink="admin-page"
+          [nzMatchRouter]="true"
+          (click)="isCollapsed = true"
+        >
           <span nz-icon nzType="user" nzTheme="outline"></span>
           <span class="nav-text">Admin Page</span>
         </li>
