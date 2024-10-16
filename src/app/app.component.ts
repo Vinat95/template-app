@@ -67,7 +67,7 @@ export class AppComponent implements OnInit {
         this.isLargeScreen = result.matches;
       });
     //Role after login
-    this.spinner = true;
+    this.loadingService.show();
     this.auth
       .handleRedirectCallback()
       .pipe(
@@ -85,11 +85,11 @@ export class AppComponent implements OnInit {
       .subscribe(
         (url) => {
           this.profileImageUrl = url ? url : "";
-          this.spinner = false;
+          this.loadingService.hide();
         },
         (err) => {
           console.log(err);
-          this.spinner = false;
+          this.loadingService.hide();
         }
       );
   }
