@@ -44,7 +44,7 @@ export const appConfig: ApplicationConfig = {
       useRefreshTokens: true,
       cacheLocation: "localstorage",
       httpInterceptor: {
-        allowedList: [{ uri: "http://localhost:3000/*" }],
+        allowedList: [{ uri: "http://localhost:3001/*" }],
       },
     }),
   ],
