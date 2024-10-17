@@ -115,15 +115,16 @@
         </div>
         }
       </nz-header>
-      <nz-content class="container">
-        <nz-breadcrumb [nzAutoGenerate]="true"> </nz-breadcrumb>
+      <div class="container">
         <nz-alert
           *ngIf="alert"
           [nzType]="alert.type"
           [nzMessage]="alert.message"
           [nzShowIcon]="true"
-          style="margin-bottom: 1.5%"
         ></nz-alert>
+      </div>
+      <nz-content class="container">
+        <nz-breadcrumb [nzAutoGenerate]="true"> </nz-breadcrumb>
         <router-outlet></router-outlet>
       </nz-content>
       <nz-footer>Footer ©2024</nz-footer>
