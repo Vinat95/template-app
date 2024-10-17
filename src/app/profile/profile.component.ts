@@ -26,6 +26,7 @@ import { AuthService as Auth0Service } from "@auth0/auth0-angular";
 import { UserAuth } from "../data/update-user.data";
 import { Observable, switchMap, tap } from "rxjs";
 import { LoadingService } from "../loading.service";
+import { AlertService } from "../alert.service";
 
 const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
   new Promise((resolve, reject) => {
@@ -64,7 +65,6 @@ export default class ProfilepageComponent {
   image_key: string = "";
   profileImageUrl: string = "";
   messageAlert: string = "";
-  showAlert = false;
   fileList: NzUploadFile[] = [];
   previewImage: string | undefined = "";
   previewVisible = false;
@@ -79,10 +79,11 @@ export default class ProfilepageComponent {
     nickname: FormControl<string>;
     profileImage: FormControl<string>;
   }>;
-
+  //TODO: togliere l'alert anche quando è Untouched il form
   constructor(
     private fb: NonNullableFormBuilder,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private alertService: AlertService
   ) {
     this.validateForm = this.fb.group({
       email: ["", [Validators.email, Validators.required]],
@@ -111,9 +112,7 @@ export default class ProfilepageComponent {
       },
       (error) => {
         this.loadingService.hide();
-        this.showAlert = true;
-        this.typeAlert = "error";
-        this.messageAlert = error.message;
+        this.alertService.showAlert("error", error.message);
       },
       () => {
         this.loadingService.hide();
@@ -124,15 +123,13 @@ export default class ProfilepageComponent {
   submitForm(): void {
     if (this.validateForm.valid) {
       this.validateForm.markAsUntouched();
-      this.showAlert = false;
+      this.alertService.hideAlert();
       this.populateBodyUpdateUser();
       this.buildObservable();
       this.loadingService.show();
       this.submit$.subscribe(
         (res) => {
-          this.showAlert = true;
-          this.typeAlert = "success";
-          this.messageAlert = "Edit profile successful";
+          this.alertService.showAlert("success", "Edit profile successful");
           this.auth.updateProfileImage(
             this.user.picture
               ? this.user.picture
@@ -140,13 +137,12 @@ export default class ProfilepageComponent {
           );
           setTimeout(() => {
             this.router.navigate(["home"]);
+            this.alertService.hideAlert();
           }, 3000);
         },
         (error) => {
           this.loadingService.hide();
-          this.showAlert = true;
-          this.typeAlert = "error";
-          this.messageAlert = error.message;
+          this.alertService.showAlert("error", error.message);
         },
         () => {
           this.loadingService.hide();
@@ -227,7 +223,7 @@ export default class ProfilepageComponent {
   }
 
   resetForm() {
-    this.showAlert = false;
+    this.alertService.hideAlert();
     this.validateForm.reset();
   }
 
@@ -245,20 +241,22 @@ export default class ProfilepageComponent {
     this.validateForm.markAsUntouched();
 
     if (!isJpeg) {
-      this.showAlert = true;
-      this.typeAlert = "error";
-      this.messageAlert = "Il file deve essere in formato JPEG.";
+      this.alertService.showAlert(
+        "error",
+        "Il file deve essere in formato JPEG."
+      );
       return false;
     }
 
     if (!isLt100kb) {
-      this.showAlert = true;
-      this.typeAlert = "error";
-      this.messageAlert = "La dimensione del file non deve superare i 100 KB.";
+      this.alertService.showAlert(
+        "error",
+        "La dimensione del file non deve superare i 100 KB."
+      );
       return false;
     }
 
-    this.showAlert = false;
+    this.alertService.hideAlert();
     this.messageAlert = "";
     return true;
   };

@@ -117,6 +117,13 @@
       </nz-header>
       <nz-content class="container">
         <nz-breadcrumb [nzAutoGenerate]="true"> </nz-breadcrumb>
+        <nz-alert
+          *ngIf="alert"
+          [nzType]="alert.type"
+          [nzMessage]="alert.message"
+          [nzShowIcon]="true"
+          style="margin-bottom: 3%"
+        ></nz-alert>
         <router-outlet></router-outlet>
       </nz-content>
       <nz-footer>Footer ©2024</nz-footer>

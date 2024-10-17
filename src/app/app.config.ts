@@ -44,7 +44,11 @@ export const appConfig: ApplicationConfig = {
       useRefreshTokens: true,
       cacheLocation: "localstorage",
       httpInterceptor: {
-        allowedList: [{ uri: "http://localhost:3001/*" }],
+        allowedList: [
+          { uri: "http://localhost:3001/api/*", allowAnonymous: false },
+          { uri: "http://localhost:3001/upload/api/*", allowAnonymous: false },
+          { uri: "http://localhost:3001/register", allowAnonymous: true },
+        ],
       },
     }),
   ],

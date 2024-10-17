@@ -5,6 +5,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { NzLayoutModule } from "ng-zorro-antd/layout";
 import { NzBreadCrumbModule } from "ng-zorro-antd/breadcrumb";
 import { NzIconModule } from "ng-zorro-antd/icon";
+import { NzAlertModule } from "ng-zorro-antd/alert";
 import { NzMenuModule } from "ng-zorro-antd/menu";
 import { NzFlexModule } from "ng-zorro-antd/flex";
 import { NzSpinModule } from "ng-zorro-antd/spin";
@@ -15,9 +16,10 @@ import { HttpClient } from "@angular/common/http";
 import { AuthService } from "./authentication/auth.service";
 import { switchMap, tap } from "rxjs";
 import { LoadingService } from "./loading.service";
+import { AlertService } from "./alert.service";
 
 type Size = "xxl" | "xl" | "lg" | "md" | "sm" | "xs" | null;
-
+type AlertType = "error" | "success" | "info" | "warning";
 @Component({
   selector: "app-root",
   standalone: true,
@@ -28,6 +30,7 @@ type Size = "xxl" | "xl" | "lg" | "md" | "sm" | "xs" | null;
     RouterLink,
     NzLayoutModule,
     NzBreadCrumbModule,
+    NzAlertModule,
     NzIconModule,
     NzMenuModule,
     NzSpinModule,
@@ -45,6 +48,10 @@ export class AppComponent implements OnInit {
   document = inject(DOCUMENT);
   authenticated = this.auth.authenticated;
   user = this.auth.user;
+  alert: {
+    type: AlertType;
+    message: string;
+  } | null = null;
   isCollapsed = true;
   spinner = false;
   currentSize: Size = "sm";
@@ -53,10 +60,16 @@ export class AppComponent implements OnInit {
   userDetails: any;
   profileImageUrl: string = "";
 
-  constructor(private loadingService: LoadingService) {
+  constructor(
+    private loadingService: LoadingService,
+    private alertService: AlertService
+  ) {
     this.loadingService.loading$.subscribe(
       (loading) => (this.spinner = loading)
     );
+    this.alertService.alert$.subscribe((alert) => {
+      this.alert = alert;
+    });
   }
 
   ngOnInit() {

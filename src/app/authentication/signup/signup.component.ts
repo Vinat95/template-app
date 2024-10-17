@@ -24,6 +24,7 @@ import { UserRegister } from "../../data/update-user.data";
 import { NzFlexModule } from "ng-zorro-antd/flex";
 import { NzButtonModule } from "ng-zorro-antd/button";
 import { LoadingService } from "../../loading.service";
+import { AlertService } from "../../alert.service";
 
 const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
   new Promise((resolve, reject) => {
@@ -59,7 +60,6 @@ export default class NotAuthorizedComponent {
   formData: FormData = new FormData();
   messageAlert: string = "";
   image_key: string = "";
-  showAlert = false;
   fileList: NzUploadFile[] = [];
   previewImage: string | undefined = "";
   previewVisible = false;
@@ -76,10 +76,11 @@ export default class NotAuthorizedComponent {
     nickname: FormControl<string>;
     profileImage: FormControl<string>;
   }>;
-
+  //TODO: togliere l'alert anche quando è Untouched il form
   constructor(
     private fb: NonNullableFormBuilder,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private alertService: AlertService
   ) {
     this.validateForm = this.fb.group({
       email: ["", [Validators.email, Validators.required]],
@@ -92,7 +93,7 @@ export default class NotAuthorizedComponent {
 
   submitForm(): void {
     if (this.validateForm.valid) {
-      this.showAlert = false;
+      this.alertService.hideAlert();
       this.validateForm.markAsUntouched();
       this.populateBodyUserRegister();
       this.loadingService.show();
@@ -106,9 +107,7 @@ export default class NotAuthorizedComponent {
         )
         .subscribe(
           (next) => {
-            this.showAlert = true;
-            this.typeAlert = "success";
-            this.messageAlert = "Signup successful";
+            this.alertService.showAlert("success", "Signup successful");
             setTimeout(() => {
               this.router.navigate(["home"]);
             }, 3000);
@@ -122,9 +121,7 @@ export default class NotAuthorizedComponent {
               this.image_key = this.user.picture!.split("/")[3];
               this.auth.deleteImageFromS3Bucket(this.image_key).subscribe();
             }
-            this.showAlert = true;
-            this.typeAlert = "error";
-            this.messageAlert = error.message;
+            this.alertService.showAlert("error", error.message);
             this.loadingService.hide();
           },
           () => {
@@ -190,7 +187,7 @@ export default class NotAuthorizedComponent {
   };
 
   resetForm() {
-    this.showAlert = false;
+    this.alertService.hideAlert();
     this.validateForm.reset();
   }
 
@@ -218,20 +215,22 @@ export default class NotAuthorizedComponent {
     this.validateForm.markAsUntouched();
 
     if (!isJpeg) {
-      this.showAlert = true;
-      this.typeAlert = "error";
-      this.messageAlert = "Il file deve essere in formato JPEG.";
+      this.alertService.showAlert(
+        "error",
+        "Il file deve essere in formato JPEG."
+      );
       return false;
     }
 
     if (!isLt100kb) {
-      this.showAlert = true;
-      this.typeAlert = "error";
-      this.messageAlert = "La dimensione del file non deve superare i 100 KB.";
+      this.alertService.showAlert(
+        "error",
+        "La dimensione del file non deve superare i 100 KB."
+      );
       return false;
     }
 
-    this.showAlert = false;
+    this.alertService.hideAlert();
     this.messageAlert = "";
     return true;
   };

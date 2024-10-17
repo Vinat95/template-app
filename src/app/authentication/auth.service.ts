@@ -66,11 +66,11 @@ export class AuthService {
   }
 
   getUserDetails(user_id: string) {
-    return this.http.get(`http://localhost:3001/${user_id}/details`);
+    return this.http.get(`http://localhost:3001/api/${user_id}/details`);
   }
 
   updateUserDetails(user_id: string, details: UserAuth) {
-    return this.http.patch(`http://localhost:3001/${user_id}`, details);
+    return this.http.patch(`http://localhost:3001/api/${user_id}`, details);
   }
 
   uploadImageToS3Bucket(payload: any) {
@@ -78,7 +78,7 @@ export class AuthService {
   }
 
   deleteImageFromS3Bucket(key: string) {
-    return this.http.delete(`http://localhost:3001/upload/${key}`);
+    return this.http.delete(`http://localhost:3001/upload/api/${key}`);
   }
 
   updateProfileImage(imageUrl: string) {

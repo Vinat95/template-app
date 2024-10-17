@@ -1,104 +1,104 @@
 <div class="content" style="padding: 24px; background: #fff; min-height: 100%">
-    <nz-alert
+  <!-- <nz-alert
       *ngIf="showAlert && validateForm.untouched"
       [nzType]="typeAlert"
       [nzMessage]="messageAlert"
       [nzShowIcon]="true"
       style="margin-bottom: 3%"
-    ></nz-alert>
-    <div class="upload-container" nz-flex [nzAlign]="'center'">
-      <nz-upload
-        nzListType="picture-card"
-        [(nzFileList)]="fileList"
-        [nzShowButton]="fileList.length < 1"
-        [nzPreview]="handlePreview"
-        [nzBeforeUpload]="beforeUploadImage"
-        (nzChange)="onChangeUpload($event)"
-      >
-        <div>
-          <span nz-icon nzType="plus"></span>
-          <div style="margin-top: 8px">Upload</div>
-        </div>
-      </nz-upload>
-      <nz-modal
-        [nzVisible]="previewVisible"
-        [nzContent]="modalContent"
-        [nzFooter]="null"
-        (nzOnCancel)="previewVisible = false"
-      >
-        <ng-template #modalContent>
-          <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
-        </ng-template>
-      </nz-modal>
-    </div>
-    <form
-      nz-form
-      [nzLayout]="'vertical'"
-      [formGroup]="validateForm"
-      (ngSubmit)="submitForm()"
+    ></nz-alert> -->
+  <div class="upload-container" nz-flex [nzAlign]="'center'">
+    <nz-upload
+      nzListType="picture-card"
+      [(nzFileList)]="fileList"
+      [nzShowButton]="fileList.length < 1"
+      [nzPreview]="handlePreview"
+      [nzBeforeUpload]="beforeUploadImage"
+      (nzChange)="onChangeUpload($event)"
     >
-      <div nz-row nzJustify="space-evenly">
-        <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6" [nzLg]="6">
-          <nz-form-item>
-            <nz-form-label [nzSpan]="null" nzRequired nzFor="email"
-              >E-mail</nz-form-label
-            >
-            <nz-form-control
-              [nzSpan]="null"
-              nzErrorTip="The input is not valid E-mail!"
-            >
-              <input nz-input formControlName="email" id="email" />
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6" [nzLg]="6">
-          <nz-form-item>
-            <nz-form-label
-              [nzSpan]="null"
-              nzFor="nickname"
-              nzRequired
-              nzTooltipTitle="What do you want other to call you"
-            >
-              <span>Nickname</span>
-            </nz-form-label>
-            <nz-form-control
-              [nzSpan]="null"
-              nzErrorTip="Please input your nickname!"
-            >
-              <input nz-input id="nickname" formControlName="nickname" />
-            </nz-form-control>
-          </nz-form-item>
-        </div>
+      <div>
+        <span nz-icon nzType="plus"></span>
+        <div style="margin-top: 8px">Upload</div>
       </div>
-      <nz-form-item>
-        <nz-form-control>
-          <div nz-row nzJustify="space-evenly">
-            <div
-              nz-col
-              [nzXs]="24"
-              [nzSm]="16"
-              [nzMd]="16"
-              style="display: flex; justify-content: space-between"
+    </nz-upload>
+    <nz-modal
+      [nzVisible]="previewVisible"
+      [nzContent]="modalContent"
+      [nzFooter]="null"
+      (nzOnCancel)="previewVisible = false"
+    >
+      <ng-template #modalContent>
+        <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
+      </ng-template>
+    </nz-modal>
+  </div>
+  <form
+    nz-form
+    [nzLayout]="'vertical'"
+    [formGroup]="validateForm"
+    (ngSubmit)="submitForm()"
+  >
+    <div nz-row nzJustify="space-evenly">
+      <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6" [nzLg]="6">
+        <nz-form-item>
+          <nz-form-label [nzSpan]="null" nzRequired nzFor="email"
+            >E-mail</nz-form-label
+          >
+          <nz-form-control
+            [nzSpan]="null"
+            nzErrorTip="The input is not valid E-mail!"
+          >
+            <input nz-input formControlName="email" id="email" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6" [nzLg]="6">
+        <nz-form-item>
+          <nz-form-label
+            [nzSpan]="null"
+            nzFor="nickname"
+            nzRequired
+            nzTooltipTitle="What do you want other to call you"
+          >
+            <span>Nickname</span>
+          </nz-form-label>
+          <nz-form-control
+            [nzSpan]="null"
+            nzErrorTip="Please input your nickname!"
+          >
+            <input nz-input id="nickname" formControlName="nickname" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <nz-form-item>
+      <nz-form-control>
+        <div nz-row nzJustify="space-evenly">
+          <div
+            nz-col
+            [nzXs]="24"
+            [nzSm]="16"
+            [nzMd]="16"
+            style="display: flex; justify-content: space-between"
+          >
+            <button
+              nz-button
+              (click)="resetForm()"
+              nzType="default"
+              [disabled]="!validateForm.dirty"
             >
-              <button
-                nz-button
-                (click)="resetForm()"
-                nzType="default"
-                [disabled]="!validateForm.dirty"
-              >
-                Clear
-              </button>
-              <button
-                nz-button
-                nzType="primary"
-                type="submit"
-                [disabled]="validateForm.pristine || validateForm.invalid"
-              >
-                Update
-              </button>
-            </div>
+              Clear
+            </button>
+            <button
+              nz-button
+              nzType="primary"
+              type="submit"
+              [disabled]="validateForm.pristine || validateForm.invalid"
+            >
+              Update
+            </button>
           </div>
-        </nz-form-control>
-      </nz-form-item>
-    </form>
+        </div>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
 </div>
