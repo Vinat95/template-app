@@ -88,7 +88,6 @@ export class AppComponent implements OnInit {
           this.loadingService.hide();
         },
         (err) => {
-          console.log(err);
           this.loadingService.hide();
         }
       );

@@ -111,7 +111,9 @@ export default class ProfilepageComponent {
       },
       (error) => {
         this.loadingService.hide();
-        console.log(error);
+        this.showAlert = true;
+        this.typeAlert = "error";
+        this.messageAlert = error.message;
       },
       () => {
         this.loadingService.hide();
@@ -141,11 +143,10 @@ export default class ProfilepageComponent {
           }, 3000);
         },
         (error) => {
-          console.log(error);
           this.loadingService.hide();
           this.showAlert = true;
           this.typeAlert = "error";
-          this.messageAlert = error.error.message;
+          this.messageAlert = error.message;
         },
         () => {
           this.loadingService.hide();

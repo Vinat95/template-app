@@ -6,8 +6,14 @@ import { NZ_I18N, en_US } from "ng-zorro-antd/i18n";
 import { IconDefinition } from "@ant-design/icons-angular";
 import * as AllIcons from "@ant-design/icons-angular/icons";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { provideHttpClient, withInterceptors } from "@angular/common/http";
+import {
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptors,
+  withInterceptorsFromDi,
+} from "@angular/common/http";
 import { authHttpInterceptorFn, provideAuth0 } from "@auth0/auth0-angular";
+import { ErrorInterceptor } from "./interceptors/error.interceptor";
 
 const antDesignIcons = AllIcons as {
   [key: string]: IconDefinition;
@@ -20,7 +26,11 @@ export const appConfig: ApplicationConfig = {
   providers: [
     { provide: NZ_I18N, useValue: en_US },
     { provide: NZ_ICONS, useValue: icons },
-    provideHttpClient(withInterceptors([authHttpInterceptorFn])),
+    provideHttpClient(
+      withInterceptors([authHttpInterceptorFn]),
+      withInterceptorsFromDi()
+    ),
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     importProvidersFrom([BrowserAnimationsModule]),
     provideRouter(routes),
     provideAuth0({

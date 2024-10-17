@@ -124,9 +124,7 @@ export default class NotAuthorizedComponent {
             }
             this.showAlert = true;
             this.typeAlert = "error";
-            this.messageAlert = error.error.message
-              ? error.error.message
-              : error.error.description;
+            this.messageAlert = error.message;
             this.loadingService.hide();
           },
           () => {
