@@ -8,7 +8,7 @@
     >
       <div nz-flex class="avatar-mobile" [nzJustify]="'center'">
         <nz-avatar
-          [nzAlt]="'ProfileImage'"
+          [nzAlt]="'Immagine del profilo'"
           nz-dropdown
           [nzDropdownMenu]="menu"
           [nzSrc]="getProfileImage()"
@@ -37,6 +37,7 @@
         [nzInlineCollapsed]="isCollapsed"
       >
         <li
+          aria-label="Home"
           nz-menu-item
           routerLink="home"
           [nzMatchRouter]="true"
@@ -47,6 +48,7 @@
         </li>
         @if(authenticated()){
         <li
+          aria-label="Profile"
           nz-menu-item
           routerLink="profile"
           [nzMatchRouter]="true"
@@ -81,7 +83,7 @@
         <div nz-flex [nzGap]="100" [nzAlign]="'center'">
           <nz-avatar
             nz-dropdown
-            [nzAlt]="'ProfileImage'"
+            [nzAlt]="'Immagine del profilo'"
             [nzDropdownMenu]="menu"
             [nzSrc]="getProfileImage()"
             [nzSize]="50"
@@ -103,13 +105,33 @@
             </ul>
           </nz-dropdown-menu>
           <ul nz-menu nzTheme="dark" nzMode="horizontal">
-            <li nz-menu-item routerLink="home" [nzMatchRouter]="true">Home</li>
+            <li
+              tabindex="0"
+              aria-label="Home"
+              nz-menu-item
+              routerLink="home"
+              [nzMatchRouter]="true"
+            >
+              Home
+            </li>
             @if(authenticated()){
-            <li nz-menu-item routerLink="profile" [nzMatchRouter]="true">
+            <li
+              tabindex="0"
+              aria-label="Profile"
+              nz-menu-item
+              routerLink="profile"
+              [nzMatchRouter]="true"
+            >
               Profile
             </li>
             } @if(authenticated() && userRole=== 'Admin'){
-            <li nz-menu-item routerLink="admin-page" [nzMatchRouter]="true">
+            <li
+              tabindex="0"
+              aria-label="Admin"
+              nz-menu-item
+              routerLink="admin-page"
+              [nzMatchRouter]="true"
+            >
               Admin Page
             </li>
             }
