@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, OnDestroy } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import {
   AbstractControl,
@@ -18,13 +18,13 @@ import { NzModalModule } from "ng-zorro-antd/modal";
 import { NzIconModule } from "ng-zorro-antd/icon";
 import { NzUploadFile } from "ng-zorro-antd/upload";
 import { Router } from "@angular/router";
-import { AuthService } from "../auth.service";
-import { switchMap, tap } from "rxjs";
+import { AuthService } from "../../services/auth.service";
+import { Subject, switchMap, takeUntil, tap } from "rxjs";
 import { UserRegister } from "../../data/update-user.data";
 import { NzFlexModule } from "ng-zorro-antd/flex";
 import { NzButtonModule } from "ng-zorro-antd/button";
-import { LoadingService } from "../../loading.service";
-import { AlertService } from "../../alert.service";
+import { LoadingService } from "../../services/loading.service";
+import { AlertService } from "../../services/alert.service";
 
 const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
   new Promise((resolve, reject) => {
@@ -53,7 +53,7 @@ const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
   templateUrl: "./signup.component.html",
   styleUrls: ["./signup.component.css"],
 })
-export default class NotAuthorizedComponent {
+export default class NotAuthorizedComponent implements OnDestroy {
   router = inject(Router);
   auth = inject(AuthService);
   typeAlert: "error" | "info" | "success" | "warning" = "success";
@@ -76,7 +76,8 @@ export default class NotAuthorizedComponent {
     nickname: FormControl<string>;
     profileImage: FormControl<string>;
   }>;
-  //TODO: togliere l'alert anche quando è Untouched il form
+  private destroy$ = new Subject<void>(); //Per effettuare unsubscribe degli observable che non completano
+  
   constructor(
     private fb: NonNullableFormBuilder,
     private loadingService: LoadingService,
@@ -89,6 +90,11 @@ export default class NotAuthorizedComponent {
       nickname: ["", [Validators.required]],
       profileImage: [""],
     });
+    this.validateForm.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.alertService.hideAlert();
+      });
   }
 
   submitForm(): void {
@@ -237,5 +243,10 @@ export default class NotAuthorizedComponent {
 
   goToHome() {
     this.router.navigate(["home"]);
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

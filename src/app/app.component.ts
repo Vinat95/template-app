@@ -13,10 +13,10 @@ import { NzAvatarModule } from "ng-zorro-antd/avatar";
 import { NzDropDownModule } from "ng-zorro-antd/dropdown";
 import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
 import { HttpClient } from "@angular/common/http";
-import { AuthService } from "./authentication/auth.service";
-import { switchMap, tap } from "rxjs";
-import { LoadingService } from "./loading.service";
-import { AlertService } from "./alert.service";
+import { AuthService } from "./services/auth.service";
+import { EMPTY, switchMap, tap } from "rxjs";
+import { LoadingService } from "./services/loading.service";
+import { AlertService } from "./services/alert.service";
 
 type Size = "xxl" | "xl" | "lg" | "md" | "sm" | "xs" | null;
 type AlertType = "error" | "success" | "info" | "warning";
@@ -85,10 +85,15 @@ export class AppComponent implements OnInit {
       .handleRedirectCallback()
       .pipe(
         tap((res: any) => {
-          this.userRole = res[0][0];
+          this.userRole = res[0] ? res[0][0] : [];
         }),
         switchMap((res) => {
-          return this.auth.getUserDetails(res[1]);
+          if (this.auth.authenticated()) {
+            return this.auth.getUserDetails(res[1]);
+          } else {
+            this.loadingService.hide();
+            return EMPTY; //non effettuare niente e completa
+          }
         }),
         tap((res: any) => {
           this.auth.updateProfileImage(res.data.picture);

@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, OnDestroy } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import {
   FormControl,
@@ -21,12 +21,12 @@ import {
   NzUploadModule,
 } from "ng-zorro-antd/upload";
 import { Router } from "@angular/router";
-import { AuthService } from "../authentication/auth.service";
+import { AuthService } from "../services/auth.service";
 import { AuthService as Auth0Service } from "@auth0/auth0-angular";
 import { UserAuth } from "../data/update-user.data";
-import { Observable, switchMap, tap } from "rxjs";
-import { LoadingService } from "../loading.service";
-import { AlertService } from "../alert.service";
+import { Observable, Subject, switchMap, takeUntil, tap } from "rxjs";
+import { LoadingService } from "../services/loading.service";
+import { AlertService } from "../services/alert.service";
 
 const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
   new Promise((resolve, reject) => {
@@ -55,7 +55,7 @@ const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
   templateUrl: "./profile.component.html",
   styleUrls: ["./profile.component.css"],
 })
-export default class ProfilepageComponent {
+export default class ProfilepageComponent implements OnDestroy {
   router = inject(Router);
   auth = inject(AuthService);
   auth0 = inject(Auth0Service);
@@ -79,7 +79,8 @@ export default class ProfilepageComponent {
     nickname: FormControl<string>;
     profileImage: FormControl<string>;
   }>;
-  //TODO: togliere l'alert anche quando è Untouched il form
+  private destroy$ = new Subject<void>(); //Per effettuare unsubscribe degli observable che non completano
+
   constructor(
     private fb: NonNullableFormBuilder,
     private loadingService: LoadingService,
@@ -90,6 +91,11 @@ export default class ProfilepageComponent {
       nickname: ["", [Validators.required]],
       profileImage: [""],
     });
+    this.validateForm.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.alertService.hideAlert();
+      });
     this.loadingService.show();
     this.auth.getUserDetails(this.auth.user()?.sub!).subscribe(
       (res: any) => {
@@ -276,5 +282,10 @@ export default class ProfilepageComponent {
 
   goToHome() {
     this.router.navigate(["home"]);
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
