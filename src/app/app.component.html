@@ -8,6 +8,7 @@
     >
       <div nz-flex class="avatar-mobile" [nzJustify]="'center'">
         <nz-avatar
+          [nzAlt]="'ProfileImage'"
           nz-dropdown
           [nzDropdownMenu]="menu"
           [nzSrc]="getProfileImage()"
@@ -80,6 +81,7 @@
         <div nz-flex [nzGap]="100" [nzAlign]="'center'">
           <nz-avatar
             nz-dropdown
+            [nzAlt]="'ProfileImage'"
             [nzDropdownMenu]="menu"
             [nzSrc]="getProfileImage()"
             [nzSize]="50"
