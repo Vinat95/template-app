@@ -97,8 +97,8 @@ export default class ProfilepageComponent implements OnDestroy {
         this.alertService.hideAlert();
       });
     this.loadingService.show();
-    this.auth.getUserDetails(this.auth.user()?.sub!).subscribe(
-      (res: any) => {
+    this.auth.getUserDetails(this.auth.user()?.sub!).subscribe({
+      next: (res: any) => {
         this.populateProfileImage(res.data.picture);
         this.auth.updateProfileImage(res.data.picture);
         this.validateForm.patchValue({
@@ -116,14 +116,14 @@ export default class ProfilepageComponent implements OnDestroy {
           },
         ];
       },
-      (error) => {
+      error: (error) => {
         this.loadingService.hide();
         this.alertService.showAlert("error", error.message);
       },
-      () => {
+      complete: () => {
         this.loadingService.hide();
-      }
-    );
+      },
+    });
   }
 
   submitForm(): void {
@@ -133,8 +133,8 @@ export default class ProfilepageComponent implements OnDestroy {
       this.populateBodyUpdateUser();
       this.buildObservable();
       this.loadingService.show();
-      this.submit$.subscribe(
-        (res) => {
+      this.submit$.subscribe({
+        next: (res) => {
           this.alertService.showAlert("success", "Edit profile successful");
           this.auth.updateProfileImage(
             this.user.picture
@@ -146,14 +146,14 @@ export default class ProfilepageComponent implements OnDestroy {
             this.alertService.hideAlert();
           }, 3000);
         },
-        (error) => {
+        error: (error) => {
           this.loadingService.hide();
           this.alertService.showAlert("error", error.message);
         },
-        () => {
+        complete: () => {
           this.loadingService.hide();
-        }
-      );
+        },
+      });
     } else {
       Object.values(this.validateForm.controls).forEach((control) => {
         if (control.invalid) {
@@ -165,14 +165,14 @@ export default class ProfilepageComponent implements OnDestroy {
   }
 
   buildObservable() {
-    this.auth.profileImage$.subscribe(
-      (url) => {
+    this.auth.profileImage$.subscribe({
+      next: (url) => {
         this.profileImageUrl = url ? url : "";
       },
-      (err) => {
+      error: (err) => {
         console.log(err);
-      }
-    );
+      },
+    });
     if (this.emptiedProfileImage) {
       this.image_key = this.profileImageUrl
         ? this.profileImageUrl.split("/")[3]

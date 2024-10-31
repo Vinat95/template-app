@@ -100,19 +100,19 @@ export class AppComponent implements OnInit {
         }),
         switchMap(() => this.auth.profileImage$)
       )
-      .subscribe(
-        (url) => {
+      .subscribe({
+        next: (url) => {
           this.profileImageUrl = url ? url : "";
           this.loadingService.hide();
         },
-        (err) => {
+        error: (err) => {
           this.loadingService.hide();
           this.alertService.showAlert("error", err.message);
         },
-        () => {
+        complete: () => {
           this.loadingService.hide();
-        }
-      );
+        },
+      });
   }
 
   doLogin() {

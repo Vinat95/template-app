@@ -77,7 +77,7 @@ export default class NotAuthorizedComponent implements OnDestroy {
     profileImage: FormControl<string>;
   }>;
   private destroy$ = new Subject<void>(); //Per effettuare unsubscribe degli observable che non completano
-  
+
   constructor(
     private fb: NonNullableFormBuilder,
     private loadingService: LoadingService,
@@ -111,14 +111,14 @@ export default class NotAuthorizedComponent implements OnDestroy {
           }),
           switchMap((res: any) => this.auth.registerUser(this.user))
         )
-        .subscribe(
-          (next) => {
+        .subscribe({
+          next: (next) => {
             this.alertService.showAlert("success", "Signup successful");
             setTimeout(() => {
               this.router.navigate(["home"]);
             }, 3000);
           },
-          (error) => {
+          error: (error) => {
             if (
               this.user.picture &&
               this.user.picture !==
@@ -130,10 +130,10 @@ export default class NotAuthorizedComponent implements OnDestroy {
             this.alertService.showAlert("error", error.message);
             this.loadingService.hide();
           },
-          () => {
+          complete: () => {
             this.loadingService.hide();
-          }
-        );
+          },
+        });
     } else {
       Object.values(this.validateForm.controls).forEach((control) => {
         if (control.invalid) {
