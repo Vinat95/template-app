@@ -36,10 +36,7 @@
           <nz-form-label [nzSpan]="null" nzRequired nzFor="email"
             >E-mail</nz-form-label
           >
-          <nz-form-control
-            [nzSpan]="null"
-            nzErrorTip="The input is not valid E-mail!"
-          >
+          <nz-form-control [nzSpan]="null" nzErrorTip="L' email non è valida">
             <input nz-input formControlName="email" id="email" />
           </nz-form-control>
         </nz-form-item>
@@ -50,14 +47,11 @@
             [nzSpan]="null"
             nzFor="nickname"
             nzRequired
-            nzTooltipTitle="What do you want other to call you"
+            nzTooltipTitle="Come vuoi essere chiamato?"
           >
             <span>Nickname</span>
           </nz-form-label>
-          <nz-form-control
-            [nzSpan]="null"
-            nzErrorTip="Please input your nickname!"
-          >
+          <nz-form-control [nzSpan]="null" nzErrorTip="Inserisci un nickname!">
             <input nz-input id="nickname" formControlName="nickname" />
           </nz-form-control>
         </nz-form-item>

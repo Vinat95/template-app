@@ -108,6 +108,9 @@ export class AppComponent implements OnInit {
         (err) => {
           this.loadingService.hide();
           this.alertService.showAlert("error", err.message);
+        },
+        () => {
+          this.loadingService.hide();
         }
       );
   }

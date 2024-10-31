@@ -36,10 +36,7 @@
           <nz-form-label [nzSpan]="null" nzRequired nzFor="email"
             >E-mail</nz-form-label
           >
-          <nz-form-control
-            [nzSpan]="null"
-            nzErrorTip="The input is not valid E-mail!"
-          >
+          <nz-form-control [nzSpan]="null" nzErrorTip="L' email non è valida">
             <input nz-input formControlName="email" id="email" />
           </nz-form-control>
         </nz-form-item>
@@ -51,11 +48,11 @@
           >
           <nz-form-control
             [nzSpan]="null"
-            nzErrorTip="Too weak password! At least 8 characters in length, Contain at least 3 of the following 4 types of characters:
-            * lower case letters (a-z)
-            * upper case letters (A-Z)
-            * numbers (i.e. 0-9)
-            * special characters (e.g. !@#$%^&*)"
+            nzErrorTip="Password debole! La password deve essere lunga almeno 8 caratteri e contenere almeno 3 dei seguenti tipi di caratteri:
+            * Lettere minuscole (a-z)
+            * Lettere maiuscole (A-Z)
+            * Numeri (0-9)
+            * Caratteri speciali (!@#$%^&*)"
           >
             <input
               nz-input
@@ -82,9 +79,9 @@
               id="checkPassword"
             />
             <ng-template #errorTpl let-control>
-              @if (control.errors?.['required']) { Please confirm your password!
-              } @if (control.errors?.['confirm']) { Two passwords that you enter
-              is inconsistent! }
+              @if (control.errors?.['required']) { Per favore inserisci una
+              password } @if (control.errors?.['confirm']) { Le password non
+              coincidono }
             </ng-template>
           </nz-form-control>
         </nz-form-item>
@@ -95,14 +92,11 @@
             [nzSpan]="null"
             nzFor="nickname"
             nzRequired
-            nzTooltipTitle="What do you want other to call you"
+            nzTooltipTitle="Come vuoi essere chiamato?"
           >
             <span>Nickname</span>
           </nz-form-label>
-          <nz-form-control
-            [nzSpan]="null"
-            nzErrorTip="Please input your nickname!"
-          >
+          <nz-form-control [nzSpan]="null" nzErrorTip="Inserisci un nickname!">
             <input nz-input id="nickname" formControlName="nickname" />
           </nz-form-control>
         </nz-form-item>
