@@ -97,7 +97,7 @@ export default class ProfilepageComponent implements OnDestroy {
         this.alertService.hideAlert();
       });
     this.loadingService.show();
-    this.auth.getUserDetails(this.auth.user()?.sub!).subscribe({
+    this.auth.getUserDetails().subscribe({
       next: (res: any) => {
         this.populateProfileImage(res.data.picture);
         this.auth.updateProfileImage(res.data.picture);
@@ -130,6 +130,7 @@ export default class ProfilepageComponent implements OnDestroy {
     if (this.validateForm.valid) {
       this.validateForm.markAsUntouched();
       this.alertService.hideAlert();
+      
       this.populateBodyUpdateUser();
       this.buildObservable();
       this.loadingService.show();
@@ -187,7 +188,6 @@ export default class ProfilepageComponent implements OnDestroy {
           }),
           switchMap(() => {
             return this.auth.updateUserDetails(
-              this.auth.user()?.sub!,
               this.user
             );
           })
@@ -199,7 +199,6 @@ export default class ProfilepageComponent implements OnDestroy {
           }),
           switchMap(() => {
             return this.auth.updateUserDetails(
-              this.auth.user()?.sub!,
               this.user
             );
           })
@@ -207,7 +206,6 @@ export default class ProfilepageComponent implements OnDestroy {
       }
     } else {
       this.submit$ = this.auth.updateUserDetails(
-        this.auth.user()?.sub!,
         this.user
       );
     }

@@ -65,12 +65,12 @@ export class AuthService {
     return this.http.post(`http://localhost:3001/register/`, body);
   }
 
-  getUserDetails(user_id: string) {
-    return this.http.get(`http://localhost:3001/api/${user_id}/details`);
+  getUserDetails() {
+    return this.http.get(`http://localhost:3001/api/${this.user()?.sub}/details`);
   }
 
-  updateUserDetails(user_id: string, details: UserAuth) {
-    return this.http.patch(`http://localhost:3001/api/${user_id}`, details);
+  updateUserDetails(details: UserAuth) {
+    return this.http.patch(`http://localhost:3001/api/${this.user()?.sub}`, details);
   }
 
   uploadImageToS3Bucket(payload: any) {

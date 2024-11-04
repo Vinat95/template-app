@@ -89,7 +89,7 @@ export class AppComponent implements OnInit {
         }),
         switchMap((res) => {
           if (this.auth.authenticated()) {
-            return this.auth.getUserDetails(res[1]);
+            return this.auth.getUserDetails();
           } else {
             this.loadingService.hide();
             return EMPTY; //non effettuare niente e completa
@@ -127,8 +127,7 @@ export class AppComponent implements OnInit {
     if (!this.auth.authenticated())
       return "https://profile-image-template-app.s3.amazonaws.com/avatar-profile.jpg";
     else {
-      if (this.profileImageUrl) return this.profileImageUrl;
-      else return "";
+      return this.profileImageUrl || "";
     }
   }
 }
