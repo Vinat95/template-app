@@ -1,21 +1,22 @@
 import { inject, Injectable } from "@angular/core";
 import { AuthService as Auth0Service } from "@auth0/auth0-angular";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { BehaviorSubject, Observable, of } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 import { DOCUMENT } from "@angular/common";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { jwtDecode } from "jwt-decode";
 import { UserAuth, UserRegister } from "../data/update-user.data";
+import { UserState } from "../data/user-state.data";
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthService {
-  private userRoleSubject = new BehaviorSubject<any>(null);
-  userRole$ = this.userRoleSubject.asObservable();
-  private profileImageSubject = new BehaviorSubject<string | null>(null);
-  profileImage$ = this.profileImageSubject.asObservable();
+  private userStateSubject = new BehaviorSubject<UserState>({
+    profileImage: "",
+  });
+  userState$ = this.userStateSubject.asObservable();
   auth = inject(Auth0Service);
   http = inject(HttpClient);
   document = inject(DOCUMENT);
@@ -45,7 +46,6 @@ export class AuthService {
           const roles = decodedToken["https://my-public-api/roles"];
           const userId = decodedToken.sub;
           this.userRole = roles || [];
-          this.userRoleSubject.next(roles);
           return [roles || [], userId];
         }
         return [];
@@ -66,11 +66,16 @@ export class AuthService {
   }
 
   getUserDetails() {
-    return this.http.get(`http://localhost:3001/api/${this.user()?.sub}/details`);
+    return this.http.get(
+      `http://localhost:3001/api/${this.user()?.sub}/details`
+    );
   }
 
   updateUserDetails(details: UserAuth) {
-    return this.http.patch(`http://localhost:3001/api/${this.user()?.sub}`, details);
+    return this.http.patch(
+      `http://localhost:3001/api/${this.user()?.sub}`,
+      details
+    );
   }
 
   uploadImageToS3Bucket(payload: any) {
@@ -82,6 +87,7 @@ export class AuthService {
   }
 
   updateProfileImage(imageUrl: string) {
-    this.profileImageSubject.next(imageUrl);
+    const currentState = this.userStateSubject.value;
+    this.userStateSubject.next({ ...currentState, profileImage: imageUrl });
   }
 }

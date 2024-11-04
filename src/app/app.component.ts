@@ -98,11 +98,11 @@ export class AppComponent implements OnInit {
         tap((res: any) => {
           this.auth.updateProfileImage(res.data.picture);
         }),
-        switchMap(() => this.auth.profileImage$)
+        switchMap(() => this.auth.userState$)
       )
       .subscribe({
-        next: (url) => {
-          this.profileImageUrl = url ? url : "";
+        next: (data) => {
+          this.profileImageUrl = data.profileImage ? data.profileImage : "";
           this.loadingService.hide();
         },
         error: (err) => {

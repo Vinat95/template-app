@@ -166,9 +166,9 @@ export default class ProfilepageComponent implements OnDestroy {
   }
 
   buildObservable() {
-    this.auth.profileImage$.subscribe({
-      next: (url) => {
-        this.profileImageUrl = url ? url : "";
+    this.auth.userState$.subscribe({
+      next: (data) => {
+        this.profileImageUrl = data.profileImage ? data.profileImage : "";
       },
       error: (err) => {
         console.log(err);
