@@ -25,6 +25,7 @@ import { NzFlexModule } from "ng-zorro-antd/flex";
 import { NzButtonModule } from "ng-zorro-antd/button";
 import { LoadingService } from "../../services/loading.service";
 import { AlertService } from "../../services/alert.service";
+import { environment } from "../../../environments/environment";
 
 const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
   new Promise((resolve, reject) => {
@@ -122,7 +123,7 @@ export default class NotAuthorizedComponent implements OnDestroy {
             if (
               this.user.picture &&
               this.user.picture !==
-                "https://profile-image-template-app.s3.amazonaws.com/avatar-profile.jpg"
+                environment.initImage
             ) {
               this.image_key = this.user.picture!.split("/")[3];
               this.auth.deleteImageFromS3Bucket(this.image_key).subscribe();
@@ -159,7 +160,7 @@ export default class NotAuthorizedComponent implements OnDestroy {
   populateProfileImage(url: string) {
     this.user.picture = url
       ? url
-      : "https://profile-image-template-app.s3.amazonaws.com/avatar-profile.jpg";
+      : environment.initImage;
   }
 
   updateConfirmValidator(): void {

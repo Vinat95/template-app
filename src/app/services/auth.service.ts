@@ -8,6 +8,7 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { jwtDecode } from "jwt-decode";
 import { UserAuth, UserRegister } from "../data/update-user.data";
 import { UserState } from "../data/user-state.data";
+import { environment } from "../../environments/environment";
 
 @Injectable({
   providedIn: "root",
@@ -43,7 +44,7 @@ export class AuthService {
         if (claims) {
           this.jwt = claims.__raw;
           const decodedToken: any = jwtDecode(this.jwt);
-          const roles = decodedToken["https://my-public-api/roles"];
+          const roles = decodedToken[environment.role];
           const userId = decodedToken.sub;
           this.userRole = roles || [];
           return [roles || [], userId];
@@ -62,28 +63,28 @@ export class AuthService {
   }
 
   registerUser(body: UserRegister) {
-    return this.http.post(`http://localhost:3001/register/`, body);
+    return this.http.post(`${environment.host}/register/`, body);
   }
 
   getUserDetails() {
     return this.http.get(
-      `http://localhost:3001/api/${this.user()?.sub}/details`
+      `${environment.host}/api/${this.user()?.sub}/details`
     );
   }
 
   updateUserDetails(details: UserAuth) {
     return this.http.patch(
-      `http://localhost:3001/api/${this.user()?.sub}`,
+      `${environment.host}/api/${this.user()?.sub}`,
       details
     );
   }
 
   uploadImageToS3Bucket(payload: any) {
-    return this.http.post(`http://localhost:3001/upload/`, payload);
+    return this.http.post(`${environment.host}/upload/`, payload);
   }
 
   deleteImageFromS3Bucket(key: string) {
-    return this.http.delete(`http://localhost:3001/upload/api/${key}`);
+    return this.http.delete(`${environment.host}/upload/api/${key}`);
   }
 
   updateProfileImage(imageUrl: string) {

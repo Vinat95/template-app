@@ -27,6 +27,7 @@ import { UserAuth } from "../data/update-user.data";
 import { Observable, Subject, switchMap, takeUntil, tap } from "rxjs";
 import { LoadingService } from "../services/loading.service";
 import { AlertService } from "../services/alert.service";
+import { environment } from "../../environments/environment";
 
 const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
   new Promise((resolve, reject) => {
@@ -140,7 +141,7 @@ export default class ProfilepageComponent implements OnDestroy {
           this.auth.updateProfileImage(
             this.user.picture
               ? this.user.picture
-              : "https://profile-image-template-app.s3.amazonaws.com/avatar-profile.jpg"
+              : environment.initImage
           );
           setTimeout(() => {
             this.router.navigate(["home"]);
@@ -223,7 +224,7 @@ export default class ProfilepageComponent implements OnDestroy {
   populateProfileImage(url: string) {
     this.user.picture = url
       ? url
-      : "https://profile-image-template-app.s3.amazonaws.com/avatar-profile.jpg";
+      : environment.initImage;
   }
 
   resetForm() {

@@ -17,6 +17,7 @@ import { AuthService } from "./services/auth.service";
 import { EMPTY, switchMap, tap } from "rxjs";
 import { LoadingService } from "./services/loading.service";
 import { AlertService } from "./services/alert.service";
+import { environment } from "../environments/environment";
 
 type Size = "xxl" | "xl" | "lg" | "md" | "sm" | "xs" | null;
 type AlertType = "error" | "success" | "info" | "warning";
@@ -125,7 +126,7 @@ export class AppComponent implements OnInit {
 
   getProfileImage(): string {
     if (!this.auth.authenticated())
-      return "https://profile-image-template-app.s3.amazonaws.com/avatar-profile.jpg";
+      return environment.initImage;
     else {
       return this.profileImageUrl || "";
     }
