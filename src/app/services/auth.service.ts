@@ -63,7 +63,7 @@ export class AuthService {
   }
 
   registerUser(body: UserRegister) {
-    return this.http.post(`${environment.host}/signup/`, body);
+    return this.http.post(`${environment.host}/users/signup/`, body);
   }
 
   getUserDetails() {
@@ -80,11 +80,11 @@ export class AuthService {
   }
 
   uploadImageToS3Bucket(payload: any) {
-    return this.http.post(`${environment.host}/v1/aws/upload/`, payload);
+    return this.http.post(`${environment.host}/aws/upload/`, payload);
   }
 
   deleteImageFromS3Bucket(key: string) {
-    return this.http.delete(`${environment.host}/v1/aws/images/${key}`);
+    return this.http.delete(`${environment.host}/aws/images/${key}`);
   }
 
   updateProfileImage(imageUrl: string) {
