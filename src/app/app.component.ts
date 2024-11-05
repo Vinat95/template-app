@@ -54,7 +54,7 @@ export class AppComponent implements OnInit {
     message: string;
   } | null = null;
   isCollapsed = true;
-  spinner = false;
+  spinner = this.loadingService.loading$;
   currentSize: Size = "sm";
   userRole: string = "";
   isLargeScreen: boolean = true;
@@ -65,9 +65,6 @@ export class AppComponent implements OnInit {
     private loadingService: LoadingService,
     private alertService: AlertService
   ) {
-    this.loadingService.loading$.subscribe(
-      (loading) => (this.spinner = loading)
-    );
     this.alertService.alert$.subscribe((alert) => {
       this.alert = alert;
     });
