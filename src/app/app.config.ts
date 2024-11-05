@@ -47,9 +47,31 @@ export const appConfig: ApplicationConfig = {
       cacheLocation: "localstorage",
       httpInterceptor: {
         allowedList: [
-          { uri: "http://localhost:3001/api/*", allowAnonymous: false },
-          { uri: "http://localhost:3001/upload/api/*", allowAnonymous: false },
-          { uri: "http://localhost:3001/register", allowAnonymous: true },
+          {
+            uri: "http://localhost:3001/v1/users/*",
+            allowAnonymous: false,
+            httpMethod: "GET",
+          },
+          {
+            uri: "http://localhost:3001/v1/signup",
+            allowAnonymous: true,
+            httpMethod: "POST",
+          },
+          {
+            uri: "http://localhost:3001/v1/users/*",
+            allowAnonymous: false,
+            httpMethod: "PATCH",
+          },
+          {
+            uri: "http://localhost:3001/v1/aws/upload",
+            allowAnonymous: true,
+            httpMethod: "POST",
+          },
+          {
+            uri: "http://localhost:3001/v1/aws/images/*",
+            allowAnonymous: false,
+            httpMethod: "DELETE",
+          },
         ],
       },
     }),
