@@ -81,7 +81,6 @@ export default class NotAuthorizedComponent implements OnDestroy {
 
   constructor(
     private fb: NonNullableFormBuilder,
-    private loadingService: LoadingService,
     private alertService: AlertService
   ) {
     this.validateForm = this.fb.group({
@@ -103,7 +102,6 @@ export default class NotAuthorizedComponent implements OnDestroy {
       this.alertService.hideAlert();
       this.validateForm.markAsUntouched();
       this.populateBodyUserRegister();
-      this.loadingService.show();
       this.auth
         .uploadImageToS3Bucket(this.formData)
         .pipe(
@@ -129,11 +127,7 @@ export default class NotAuthorizedComponent implements OnDestroy {
               this.auth.deleteImageFromS3Bucket(this.image_key).subscribe();
             }
             this.alertService.showAlert("error", error.message);
-            this.loadingService.hide();
-          },
-          complete: () => {
-            this.loadingService.hide();
-          },
+          }
         });
     } else {
       Object.values(this.validateForm.controls).forEach((control) => {

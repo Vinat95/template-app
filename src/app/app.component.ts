@@ -12,12 +12,13 @@ import { NzSpinModule } from "ng-zorro-antd/spin";
 import { NzAvatarModule } from "ng-zorro-antd/avatar";
 import { NzDropDownModule } from "ng-zorro-antd/dropdown";
 import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
-import { HttpClient } from "@angular/common/http";
+import { HTTP_INTERCEPTORS, HttpClient } from "@angular/common/http";
 import { AuthService } from "./services/auth.service";
 import { EMPTY, switchMap, tap } from "rxjs";
 import { LoadingService } from "./services/loading.service";
 import { AlertService } from "./services/alert.service";
 import { environment } from "../environments/environment";
+import { SpinnerInterceptor } from "./interceptors/spinner.interceptor";
 
 type Size = "xxl" | "xl" | "lg" | "md" | "sm" | "xs" | null;
 type AlertType = "error" | "success" | "info" | "warning";
@@ -78,18 +79,16 @@ export class AppComponent implements OnInit {
         this.isLargeScreen = result.matches;
       });
     //Role after login
-    this.loadingService.show();
     this.auth
       .handleRedirectCallback()
       .pipe(
         tap((res: any) => {
           this.userRole = res[0] ? res[0][0] : [];
         }),
-        switchMap((res) => {
+        switchMap(() => {
           if (this.auth.authenticated()) {
             return this.auth.getUserDetails();
           } else {
-            this.loadingService.hide();
             return EMPTY; //non effettuare niente e completa
           }
         }),
@@ -101,14 +100,9 @@ export class AppComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.profileImageUrl = data.profileImage ? data.profileImage : "";
-          this.loadingService.hide();
         },
         error: (err) => {
-          this.loadingService.hide();
           this.alertService.showAlert("error", err.message);
-        },
-        complete: () => {
-          this.loadingService.hide();
         },
       });
   }
@@ -122,8 +116,7 @@ export class AppComponent implements OnInit {
   }
 
   getProfileImage(): string {
-    if (!this.auth.authenticated())
-      return environment.initImage;
+    if (!this.auth.authenticated()) return environment.initImage;
     else {
       return this.profileImageUrl || "";
     }

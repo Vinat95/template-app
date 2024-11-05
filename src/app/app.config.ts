@@ -14,6 +14,7 @@ import {
 } from "@angular/common/http";
 import { authHttpInterceptorFn, provideAuth0 } from "@auth0/auth0-angular";
 import { ErrorInterceptor } from "./interceptors/error.interceptor";
+import { SpinnerInterceptor } from "./interceptors/spinner.interceptor";
 
 const antDesignIcons = AllIcons as {
   [key: string]: IconDefinition;
@@ -31,6 +32,7 @@ export const appConfig: ApplicationConfig = {
       withInterceptorsFromDi()
     ),
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: SpinnerInterceptor, multi: true },
     importProvidersFrom([BrowserAnimationsModule]),
     provideRouter(routes),
     provideAuth0({

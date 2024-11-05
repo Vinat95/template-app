@@ -84,7 +84,6 @@ export default class ProfilepageComponent implements OnDestroy {
 
   constructor(
     private fb: NonNullableFormBuilder,
-    private loadingService: LoadingService,
     private alertService: AlertService
   ) {
     this.validateForm = this.fb.group({
@@ -97,7 +96,6 @@ export default class ProfilepageComponent implements OnDestroy {
       .subscribe(() => {
         this.alertService.hideAlert();
       });
-    this.loadingService.show();
     this.auth.getUserDetails().subscribe({
       next: (res: any) => {
         this.populateProfileImage(res.data.picture);
@@ -118,11 +116,7 @@ export default class ProfilepageComponent implements OnDestroy {
         ];
       },
       error: (error) => {
-        this.loadingService.hide();
         this.alertService.showAlert("error", error.message);
-      },
-      complete: () => {
-        this.loadingService.hide();
       },
     });
   }
@@ -134,9 +128,8 @@ export default class ProfilepageComponent implements OnDestroy {
       
       this.populateBodyUpdateUser();
       this.buildObservable();
-      this.loadingService.show();
       this.submit$.subscribe({
-        next: (res) => {
+        next: () => {
           this.alertService.showAlert("success", "Edit profile successful");
           this.auth.updateProfileImage(
             this.user.picture
@@ -149,11 +142,7 @@ export default class ProfilepageComponent implements OnDestroy {
           }, 3000);
         },
         error: (error) => {
-          this.loadingService.hide();
           this.alertService.showAlert("error", error.message);
-        },
-        complete: () => {
-          this.loadingService.hide();
         },
       });
     } else {
