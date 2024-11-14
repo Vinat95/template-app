@@ -12,13 +12,12 @@ import { NzSpinModule } from "ng-zorro-antd/spin";
 import { NzAvatarModule } from "ng-zorro-antd/avatar";
 import { NzDropDownModule } from "ng-zorro-antd/dropdown";
 import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
-import { HTTP_INTERCEPTORS, HttpClient } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { AuthService } from "./services/auth.service";
-import { EMPTY, switchMap, tap } from "rxjs";
+import { EMPTY, shareReplay, switchMap, take, tap } from "rxjs";
 import { LoadingService } from "./services/loading.service";
 import { AlertService } from "./services/alert.service";
 import { environment } from "../environments/environment";
-import { SpinnerInterceptor } from "./interceptors/spinner.interceptor";
 
 type Size = "xxl" | "xl" | "lg" | "md" | "sm" | "xs" | null;
 type AlertType = "error" | "success" | "info" | "warning";
@@ -82,18 +81,19 @@ export class AppComponent implements OnInit {
     this.auth
       .handleRedirectCallback()
       .pipe(
+        take(1),
         tap((res: any) => {
           this.userRole = res[0] ? res[0][0] : [];
         }),
         switchMap(() => {
           if (this.auth.authenticated()) {
-            return this.auth.getUserDetails();
+            return this.auth.getUserProfileImage();
           } else {
             return EMPTY; //non effettuare niente e completa
           }
         }),
         tap((res: any) => {
-          this.auth.updateProfileImage(res.data.picture);
+          this.auth.updateProfileImage(res.data);
         }),
         switchMap(() => this.auth.userState$)
       )

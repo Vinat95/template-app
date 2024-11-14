@@ -15,6 +15,7 @@ import {
 import { authHttpInterceptorFn, provideAuth0 } from "@auth0/auth0-angular";
 import { ErrorInterceptor } from "./interceptors/error.interceptor";
 import { SpinnerInterceptor } from "./interceptors/spinner.interceptor";
+import { environment } from "../environments/environment";
 
 const antDesignIcons = AllIcons as {
   [key: string]: IconDefinition;
@@ -48,27 +49,27 @@ export const appConfig: ApplicationConfig = {
       httpInterceptor: {
         allowedList: [
           {
-            uri: "http://localhost:3001/v1/users/*",
+            uri: environment.host + "/users/*",
             allowAnonymous: false,
             httpMethod: "GET",
           },
           {
-            uri: "http://localhost:3001/v1/signup",
+            uri: environment.host + "/signup",
             allowAnonymous: true,
             httpMethod: "POST",
           },
           {
-            uri: "http://localhost:3001/v1/users/*",
+            uri: environment.host + "/users/*",
             allowAnonymous: false,
             httpMethod: "PATCH",
           },
           {
-            uri: "http://localhost:3001/v1/aws/upload",
+            uri: environment.host + "/aws/upload",
             allowAnonymous: true,
             httpMethod: "POST",
           },
           {
-            uri: "http://localhost:3001/v1/aws/images/*",
+            uri: environment.host + "/aws/images/*",
             allowAnonymous: false,
             httpMethod: "DELETE",
           },

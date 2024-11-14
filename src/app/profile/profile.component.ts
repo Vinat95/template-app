@@ -24,7 +24,14 @@ import { Router } from "@angular/router";
 import { AuthService } from "../services/auth.service";
 import { AuthService as Auth0Service } from "@auth0/auth0-angular";
 import { UserAuth } from "../data/update-user.data";
-import { Observable, Subject, switchMap, takeUntil, tap } from "rxjs";
+import {
+  Observable,
+  shareReplay,
+  Subject,
+  switchMap,
+  takeUntil,
+  tap,
+} from "rxjs";
 import { LoadingService } from "../services/loading.service";
 import { AlertService } from "../services/alert.service";
 import { environment } from "../../environments/environment";
@@ -125,16 +132,14 @@ export default class ProfilepageComponent implements OnDestroy {
     if (this.validateForm.valid) {
       this.validateForm.markAsUntouched();
       this.alertService.hideAlert();
-      
+
       this.populateBodyUpdateUser();
       this.buildObservable();
       this.submit$.subscribe({
         next: () => {
           this.alertService.showAlert("success", "Edit profile successful");
           this.auth.updateProfileImage(
-            this.user.picture
-              ? this.user.picture
-              : environment.initImage
+            this.user.picture ? this.user.picture : environment.initImage
           );
           setTimeout(() => {
             this.router.navigate(["home"]);
@@ -168,7 +173,7 @@ export default class ProfilepageComponent implements OnDestroy {
       this.image_key = this.profileImageUrl
         ? this.profileImageUrl.split("/")[3]
         : this.auth.user()?.picture!.split("/")[3]!;
-      if (this.image_key !== "avatar-profile.jpg") {
+      if (this.image_key !== environment.initImageName) {
         this.submit$ = this.auth.uploadImageToS3Bucket(this.formData).pipe(
           tap((res: any) => {
             this.populateProfileImage(res.url);
@@ -177,9 +182,7 @@ export default class ProfilepageComponent implements OnDestroy {
             return this.auth.deleteImageFromS3Bucket(this.image_key);
           }),
           switchMap(() => {
-            return this.auth.updateUserDetails(
-              this.user
-            );
+            return this.auth.updateUserDetails(this.user);
           })
         );
       } else {
@@ -188,16 +191,12 @@ export default class ProfilepageComponent implements OnDestroy {
             this.populateProfileImage(res.url);
           }),
           switchMap(() => {
-            return this.auth.updateUserDetails(
-              this.user
-            );
+            return this.auth.updateUserDetails(this.user);
           })
         );
       }
     } else {
-      this.submit$ = this.auth.updateUserDetails(
-        this.user
-      );
+      this.submit$ = this.auth.updateUserDetails(this.user);
     }
   }
 
@@ -211,9 +210,7 @@ export default class ProfilepageComponent implements OnDestroy {
   }
 
   populateProfileImage(url: string) {
-    this.user.picture = url
-      ? url
-      : environment.initImage;
+    this.user.picture = url ? url : environment.initImage;
   }
 
   resetForm() {

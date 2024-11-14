@@ -72,6 +72,12 @@ export class AuthService {
     );
   }
 
+  getUserProfileImage() {
+    return this.http.get(
+      `${environment.host}/users/${this.user()?.sub}/profile-image`
+    );
+  }
+
   updateUserDetails(details: UserAuth) {
     return this.http.patch(
       `${environment.host}/users/${this.user()?.sub}`,
