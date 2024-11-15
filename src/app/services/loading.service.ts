@@ -15,10 +15,8 @@ export class LoadingService {
   }
 
   hide() {
-    if (this.activeRequests > 0) {
-      this.activeRequests--;
-      this.updateSpinner();
-    }
+    this.activeRequests--;
+    this.updateSpinner();
   }
 
   private updateSpinner() {

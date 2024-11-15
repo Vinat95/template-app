@@ -99,7 +99,7 @@ export class AppComponent implements OnInit {
       )
       .subscribe({
         next: (data) => {
-          this.profileImageUrl = data.profileImage ? data.profileImage : "";
+          this.profileImageUrl = data.profileImage ?? '';
         },
         error: (err) => {
           this.alertService.showAlert("error", err.message);
