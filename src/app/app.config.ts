@@ -37,11 +37,11 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom([BrowserAnimationsModule]),
     provideRouter(routes),
     provideAuth0({
-      domain: "dev-lwot5qle50opfs87.eu.auth0.com",
-      clientId: "qnPQDHhKfJEZL8CfY0EdZpbEAWWaZo7D",
+      domain: environment.auth0Domain,
+      clientId: environment.auth0ClientID,
       authorizationParams: {
         redirect_uri: window.location.origin,
-        audience: "https://dev-lwot5qle50opfs87.eu.auth0.com/api/v2/",
+        audience: environment.auth0Audience,
         scope: "openid profile email offline_access",
       },
       useRefreshTokens: true,
