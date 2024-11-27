@@ -19,7 +19,6 @@ export class SpinnerInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     const requestId = `${req.method}:${req.urlWithParams}`;
-    console.log(requestId);
 
     if (!this.activeRequests.has(requestId)) {
       //Non avvio l'interceptor piu volte sulla stessa chiamata
