@@ -61,6 +61,20 @@
               formControlName="password"
               (ngModelChange)="updateConfirmValidator()"
             />
+            <span
+              nz-icon
+              nzType="eye-invisible"
+              nzTheme="twotone"
+              (click)="visibilityPassword()"
+              *ngIf="showPassword"
+            ></span>
+            <span
+              nz-icon
+              nzType="eye"
+              nzTheme="twotone"
+              (click)="visibilityPassword()"
+              *ngIf="!showPassword"
+            ></span>
           </nz-form-control>
         </nz-form-item>
       </div>
@@ -78,6 +92,20 @@
               formControlName="checkPassword"
               id="checkPassword"
             />
+            <span
+              nz-icon
+              nzType="eye-invisible"
+              nzTheme="twotone"
+              (click)="visibilityCheckPassword()"
+              *ngIf="showCheckPassword"
+            ></span>
+            <span
+              nz-icon
+              nzType="eye"
+              nzTheme="twotone"
+              (click)="visibilityCheckPassword()"
+              *ngIf="!showCheckPassword"
+            ></span>
             <ng-template #errorTpl let-control>
               @if (control.errors?.['required']) { Per favore inserisci una
               password } @if (control.errors?.['confirm']) { Le password non

@@ -1,3 +1,26 @@
 .ant-select.ant-select-in-form-item.phone-select {
   width: 70px;
 }
+
+.anticon-eye,
+.anticon-eye-invisible {
+  font-size: x-large;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+button {
+  width: 150px;
+  border-radius: 20px;
+  height: 40px;
+}
+
+input {
+  border: none;
+  outline: none;
+  padding: 20px;
+  width: 100%;
+  border-radius: 10px;
+  background-color: whitesmoke;
+}

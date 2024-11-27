@@ -1,91 +1,96 @@
 <div class="content" style="padding: 24px; background: #fff; min-height: 100%">
-  <div class="upload-container" nz-flex [nzAlign]="'center'">
-    <nz-upload
-      nzListType="picture-card"
-      [(nzFileList)]="fileList"
-      [nzShowButton]="fileList.length < 1"
-      [nzPreview]="handlePreview"
-      [nzBeforeUpload]="beforeUploadImage"
-      (nzChange)="onChangeUpload($event)"
-    >
-      <div>
-        <span nz-icon nzType="plus"></span>
-        <div style="margin-top: 8px">Upload</div>
-      </div>
-    </nz-upload>
-    <nz-modal
-      [nzVisible]="previewVisible"
-      [nzContent]="modalContent"
-      [nzFooter]="null"
-      (nzOnCancel)="previewVisible = false"
-    >
-      <ng-template #modalContent>
-        <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
-      </ng-template>
-    </nz-modal>
-  </div>
-  <form
-    nz-form
-    [nzLayout]="'vertical'"
-    [formGroup]="validateForm"
-    (ngSubmit)="submitForm()"
-  >
-    <div nz-row nzJustify="space-evenly">
-      <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6" [nzLg]="6">
-        <nz-form-item>
-          <nz-form-label [nzSpan]="null" nzRequired nzFor="email"
-            >E-mail</nz-form-label
-          >
-          <nz-form-control [nzSpan]="null" nzErrorTip="L' email non è valida">
-            <input nz-input formControlName="email" id="email" />
-          </nz-form-control>
-        </nz-form-item>
-      </div>
-      <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6" [nzLg]="6">
-        <nz-form-item>
-          <nz-form-label
-            [nzSpan]="null"
-            nzFor="nickname"
-            nzRequired
-            nzTooltipTitle="Come vuoi essere chiamato?"
-          >
-            <span>Nickname</span>
-          </nz-form-label>
-          <nz-form-control [nzSpan]="null" nzErrorTip="Inserisci un nickname!">
-            <input nz-input id="nickname" formControlName="nickname" />
-          </nz-form-control>
-        </nz-form-item>
-      </div>
-    </div>
-    <nz-form-item>
-      <nz-form-control>
-        <div nz-row nzJustify="space-evenly">
-          <div
-            nz-col
-            [nzXs]="24"
-            [nzSm]="16"
-            [nzMd]="16"
-            style="display: flex; justify-content: space-between"
-          >
-            <button
-              nz-button
-              (click)="resetForm()"
-              nzType="default"
-              [disabled]="!validateForm.dirty"
-            >
-              Clear
-            </button>
-            <button
-              nz-button
-              nzType="primary"
-              type="submit"
-              [disabled]="validateForm.pristine || validateForm.invalid"
-            >
-              Update
-            </button>
-          </div>
+  <div class="signup">
+    <div class="upload-container" nz-flex [nzAlign]="'center'">
+      <nz-upload
+        nzListType="picture-card"
+        [(nzFileList)]="fileList"
+        [nzShowButton]="fileList.length < 1"
+        [nzPreview]="handlePreview"
+        [nzBeforeUpload]="beforeUploadImage"
+        (nzChange)="onChangeUpload($event)"
+      >
+        <div>
+          <span nz-icon nzType="plus"></span>
+          <div style="margin-top: 8px">Upload</div>
         </div>
-      </nz-form-control>
-    </nz-form-item>
-  </form>
+      </nz-upload>
+      <nz-modal
+        [nzVisible]="previewVisible"
+        [nzContent]="modalContent"
+        [nzFooter]="null"
+        (nzOnCancel)="previewVisible = false"
+      >
+        <ng-template #modalContent>
+          <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
+        </ng-template>
+      </nz-modal>
+    </div>
+    <form
+      nz-form
+      [nzLayout]="'vertical'"
+      [formGroup]="validateForm"
+      (ngSubmit)="submitForm()"
+    >
+      <div nz-row nzJustify="space-evenly">
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6" [nzLg]="6">
+          <nz-form-item>
+            <nz-form-label [nzSpan]="null" nzRequired nzFor="email"
+              >E-mail</nz-form-label
+            >
+            <nz-form-control [nzSpan]="null" nzErrorTip="L' email non è valida">
+              <input nz-input formControlName="email" id="email" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6" [nzLg]="6">
+          <nz-form-item>
+            <nz-form-label
+              [nzSpan]="null"
+              nzFor="nickname"
+              nzRequired
+              nzTooltipTitle="Come vuoi essere chiamato?"
+            >
+              <span>Nickname</span>
+            </nz-form-label>
+            <nz-form-control
+              [nzSpan]="null"
+              nzErrorTip="Inserisci un nickname!"
+            >
+              <input nz-input id="nickname" formControlName="nickname" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <nz-form-item>
+        <nz-form-control>
+          <div nz-row nzJustify="space-evenly">
+            <div
+              nz-col
+              [nzXs]="24"
+              [nzSm]="16"
+              [nzMd]="16"
+              style="display: flex; justify-content: space-between"
+            >
+              <button
+                nz-button
+                (click)="resetForm()"
+                nzType="default"
+                [disabled]="!validateForm.dirty"
+              >
+                Clear
+              </button>
+              <button
+                nz-button
+                nzType="primary"
+                type="submit"
+                [disabled]="validateForm.pristine || validateForm.invalid"
+              >
+                Update
+              </button>
+            </div>
+          </div>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
 </div>

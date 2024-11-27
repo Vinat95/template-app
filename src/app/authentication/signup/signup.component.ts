@@ -64,6 +64,8 @@ export default class NotAuthorizedComponent implements OnDestroy {
   fileList: NzUploadFile[] = [];
   previewImage: string | undefined = "";
   previewVisible = false;
+  showPassword = false;
+  showCheckPassword = false;
   user: UserRegister = {
     email: "",
     password: "",
@@ -120,14 +122,13 @@ export default class NotAuthorizedComponent implements OnDestroy {
           error: (error) => {
             if (
               this.user.picture &&
-              this.user.picture !==
-                environment.initImage
+              this.user.picture !== environment.initImage
             ) {
               this.image_key = this.user.picture!.split("/")[3];
               this.auth.deleteImageFromS3Bucket(this.image_key).subscribe();
             }
             this.alertService.showAlert("error", error.message);
-          }
+          },
         });
     } else {
       Object.values(this.validateForm.controls).forEach((control) => {
@@ -152,9 +153,7 @@ export default class NotAuthorizedComponent implements OnDestroy {
   }
 
   populateProfileImage(url: string) {
-    this.user.picture = url
-      ? url
-      : environment.initImage;
+    this.user.picture = url ? url : environment.initImage;
   }
 
   updateConfirmValidator(): void {
@@ -190,6 +189,22 @@ export default class NotAuthorizedComponent implements OnDestroy {
   resetForm() {
     this.alertService.hideAlert();
     this.validateForm.reset();
+  }
+
+  visibilityPassword() {
+    this.showPassword = !this.showPassword;
+    let password: HTMLInputElement = document.getElementById(
+      "password"
+    ) as HTMLInputElement;
+    password.type = password.type === "text" ? "password" : "text";
+  }
+
+  visibilityCheckPassword() {
+    this.showCheckPassword = !this.showCheckPassword;
+    let checkPassword: HTMLInputElement = document.getElementById(
+      "checkPassword"
+    ) as HTMLInputElement;
+    checkPassword.type = checkPassword.type === "text" ? "password" : "text";
   }
 
   handlePreview = async (file: NzUploadFile): Promise<void> => {

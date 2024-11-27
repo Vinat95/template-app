@@ -1,1 +1,24 @@
+input {
+  border: none;
+  outline: none;
+  padding: 20px;
+  width: 100%;
+  border-radius: 10px;
+  background-color: whitesmoke;
+}
 
+button {
+  width: 150px;
+  border-radius: 20px;
+  height: 40px;
+}
+
+/* .signup {
+  background-color: #efefef;
+  width: 50%;
+  text-align: center;
+  border: 2px solid #fff;
+  border-radius: 30px;
+  padding: 50px 30px;
+  box-shadow: 0 50px 150px #5553;
+} */
