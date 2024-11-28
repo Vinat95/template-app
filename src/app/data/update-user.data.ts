@@ -14,3 +14,8 @@ export interface UserRegister {
   password: string;
   user_metadata: UserMetadata;
 }
+
+export interface UserLogin {
+  email: string;
+  password: string;
+}

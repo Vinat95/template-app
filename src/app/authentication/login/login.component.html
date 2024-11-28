@@ -1,0 +1,105 @@
+<div class="content" style="padding: 24px; background: #fff; min-height: 100%">
+  <form
+    nz-form
+    [formGroup]="validateForm"
+    [nzLayout]="'vertical'"
+    (ngSubmit)="submitForm()"
+  >
+    <div nz-row nzJustify="space-evenly">
+      <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6" [nzLg]="6">
+        <nz-form-item>
+          <nz-form-label [nzSpan]="null" nzRequired nzFor="email"
+            >E-mail</nz-form-label
+          >
+          <nz-form-control [nzSpan]="null" nzErrorTip="L' email non è valida">
+            <input nz-input formControlName="email" id="email" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <div nz-row nzJustify="space-evenly">
+      <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6" [nzLg]="6">
+        <nz-form-item>
+          <nz-form-label [nzSpan]="null" nzFor="password" nzRequired
+            >Password</nz-form-label
+          >
+          <nz-form-control
+            [nzSpan]="null"
+            nzErrorTip="Password debole! La password deve essere lunga almeno 8 caratteri e contenere almeno 3 dei seguenti tipi di caratteri:
+            * Lettere minuscole (a-z)
+            * Lettere maiuscole (A-Z)
+            * Numeri (0-9)
+            * Caratteri speciali (!@#$%^&*)"
+          >
+            <input
+              nz-input
+              type="password"
+              id="password"
+              formControlName="password"
+            />
+            <span
+              nz-icon
+              nzType="eye-invisible"
+              nzTheme="twotone"
+              (click)="visibilityPassword()"
+              *ngIf="showPassword"
+            ></span>
+            <span
+              nz-icon
+              nzType="eye"
+              nzTheme="twotone"
+              (click)="visibilityPassword()"
+              *ngIf="!showPassword"
+            ></span>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <div nz-row nzJustify="space-evenly" style="margin-bottom: 1.5rem">
+      <a href="#">Forgot your password?</a>
+    </div>
+    <nz-form-item>
+      <nz-form-control>
+        <div nz-row nzJustify="space-evenly">
+          <div
+            nz-col
+            [nzXs]="24"
+            [nzSm]="16"
+            [nzMd]="16"
+            style="display: flex; justify-content: center"
+          >
+            <button
+              nz-button
+              nzType="primary"
+              type="submit"
+              [disabled]="validateForm.pristine || validateForm.invalid"
+            >
+              Sign In
+            </button>
+          </div>
+          <div
+            nz-col
+            [nzXs]="24"
+            [nzSm]="16"
+            [nzMd]="16"
+            style="display: flex; justify-content: center; margin-top: 1.5rem"
+          >
+            <button
+              nz-button
+              nzType="default"
+              (click)="resetForm()"
+              [disabled]="!validateForm.dirty"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+      </nz-form-control>
+    </nz-form-item>
+    <div nz-row nzJustify="center" style="margin-bottom: 1.5rem">
+      <p>Not a member?</p>
+      &nbsp;
+      <a (click)="goToSignUp()">Register now?</a>
+    </div>
+  </form>
+</div>

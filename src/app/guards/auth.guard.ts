@@ -27,9 +27,7 @@ export const authGuard: CanActivateFn = (route, state) => {
           // Controlla se l'utente ha i ruoli necessari
           if (
             !requiredRoles ||
-            requiredRoles.some((role) =>
-              roles.includes(role)
-            )
+            requiredRoles.some((role) => roles.includes(role))
           ) {
             // Se i ruoli dell'utente includono uno dei ruoli richiesti, consenti l'accesso
             return true;
@@ -48,7 +46,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   );
 };
 
-export const signupGuard: CanActivateFn = (route, state) => {
+export const checkLoginsignupGuard: CanActivateFn = (route, state) => {
   const auth0Service = inject(Auth0Service);
   const router = inject(Router);
 

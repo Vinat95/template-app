@@ -20,7 +20,7 @@ import { NzUploadFile } from "ng-zorro-antd/upload";
 import { Router } from "@angular/router";
 import { AuthService } from "../../services/auth.service";
 import { Subject, switchMap, takeUntil, tap } from "rxjs";
-import { UserRegister } from "../../data/update-user.data";
+import { UserLogin, UserRegister } from "../../data/update-user.data";
 import { NzFlexModule } from "ng-zorro-antd/flex";
 import { NzButtonModule } from "ng-zorro-antd/button";
 import { LoadingService } from "../../services/loading.service";
@@ -36,7 +36,7 @@ const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
   });
 
 @Component({
-  selector: "app-signup",
+  selector: "app-login",
   standalone: true,
   imports: [
     CommonModule,
@@ -51,10 +51,10 @@ const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
     NzIconModule,
     NzFlexModule,
   ],
-  templateUrl: "./signup.component.html",
-  styleUrls: ["./signup.component.css"],
+  templateUrl: "./login.component.html",
+  styleUrls: ["./login.component.css"],
 })
-export default class SignUpComponent implements OnDestroy {
+export default class LoginComponent implements OnDestroy {
   router = inject(Router);
   auth = inject(AuthService);
   typeAlert: "error" | "info" | "success" | "warning" = "success";
@@ -65,19 +65,13 @@ export default class SignUpComponent implements OnDestroy {
   previewImage: string | undefined = "";
   previewVisible = false;
   showPassword = false;
-  showCheckPassword = false;
-  user: UserRegister = {
+  user: UserLogin = {
     email: "",
     password: "",
-    picture: "",
-    user_metadata: { nickname: "" },
   };
   validateForm: FormGroup<{
     email: FormControl<string>;
     password: FormControl<string>;
-    checkPassword: FormControl<string>;
-    nickname: FormControl<string>;
-    profileImage: FormControl<string>;
   }>;
   private destroy$ = new Subject<void>(); //Per effettuare unsubscribe degli observable che non completano
 
@@ -88,9 +82,6 @@ export default class SignUpComponent implements OnDestroy {
     this.validateForm = this.fb.group({
       email: ["", [Validators.email, Validators.required]],
       password: ["", [Validators.required, this.passwordValidator]],
-      checkPassword: ["", [Validators.required, this.confirmationValidator]],
-      nickname: ["", [Validators.required]],
-      profileImage: [""],
     });
     this.validateForm.valueChanges
       .pipe(takeUntil(this.destroy$))
@@ -103,33 +94,33 @@ export default class SignUpComponent implements OnDestroy {
     if (this.validateForm.valid) {
       this.alertService.hideAlert();
       this.validateForm.markAsUntouched();
-      this.populateBodyUserRegister();
-      this.auth
-        .uploadImageToS3Bucket(this.formData)
-        .pipe(
-          tap((res: any) => {
-            this.populateProfileImage(res.url);
-          }),
-          switchMap((res: any) => this.auth.registerUser(this.user))
-        )
-        .subscribe({
-          next: (next) => {
-            this.alertService.showAlert("success", "Signup successful");
-            setTimeout(() => {
-              this.router.navigate(["home"]);
-            }, 3000);
-          },
-          error: (error) => {
-            if (
-              this.user.picture &&
-              this.user.picture !== environment.initImage
-            ) {
-              this.image_key = this.user.picture!.split("/")[3];
-              this.auth.deleteImageFromS3Bucket(this.image_key).subscribe();
-            }
-            this.alertService.showAlert("error", error.message);
-          },
-        });
+      this.populateBodyUserLogin();
+      // this.auth
+      //   .uploadImageToS3Bucket(this.formData)
+      //   .pipe(
+      //     tap((res: any) => {
+      //       this.populateProfileImage(res.url);
+      //     }),
+      //     switchMap((res: any) => this.auth.registerUser(this.user))
+      //   )
+      //   .subscribe({
+      //     next: (next) => {
+      //       this.alertService.showAlert("success", "Signup successful");
+      //       setTimeout(() => {
+      //         this.router.navigate(["home"]);
+      //       }, 3000);
+      //     },
+      //     error: (error) => {
+      //       if (
+      //         this.user.picture &&
+      //         this.user.picture !== environment.initImage
+      //       ) {
+      //         this.image_key = this.user.picture!.split("/")[3];
+      //         this.auth.deleteImageFromS3Bucket(this.image_key).subscribe();
+      //       }
+      //       this.alertService.showAlert("error", error.message);
+      //     },
+      //   });
     } else {
       Object.values(this.validateForm.controls).forEach((control) => {
         if (control.invalid) {
@@ -140,26 +131,13 @@ export default class SignUpComponent implements OnDestroy {
     }
   }
 
-  populateBodyUserRegister() {
+  populateBodyUserLogin() {
     this.user.email = this.validateForm.get("email")
       ? this.validateForm.get("email")?.value!
       : "";
     this.user.password = this.validateForm.get("password")
       ? this.validateForm.get("password")?.value!
       : "";
-    this.user.user_metadata.nickname = this.validateForm.get("nickname")
-      ? this.validateForm.get("nickname")?.value!
-      : "";
-  }
-
-  populateProfileImage(url: string) {
-    this.user.picture = url ? url : environment.initImage;
-  }
-
-  updateConfirmValidator(): void {
-    Promise.resolve().then(() =>
-      this.validateForm.controls.checkPassword.updateValueAndValidity()
-    );
   }
 
   confirmationValidator: ValidatorFn = (
@@ -199,57 +177,9 @@ export default class SignUpComponent implements OnDestroy {
     password.type = password.type === "text" ? "password" : "text";
   }
 
-  visibilityCheckPassword() {
-    this.showCheckPassword = !this.showCheckPassword;
-    let checkPassword: HTMLInputElement = document.getElementById(
-      "checkPassword"
-    ) as HTMLInputElement;
-    checkPassword.type = checkPassword.type === "text" ? "password" : "text";
+  goToSignUp() {
+    this.router.navigate(["signup"]);
   }
-
-  handlePreview = async (file: NzUploadFile): Promise<void> => {
-    if (!file.url && !file["preview"]) {
-      file["preview"] = await getBase64(file.originFileObj!);
-    }
-    this.previewImage = file.url || file["preview"];
-    this.previewVisible = true;
-  };
-
-  onChangeUpload(event: NzUploadChangeParam) {
-    if (event.type === "removed") {
-      this.formData = new FormData();
-    }
-    if (event.type === "error") {
-      const file = event.file.originFileObj as File;
-      this.formData.append("file", file);
-    }
-  }
-
-  beforeUploadImage = (file: NzUploadFile): boolean => {
-    const isLt100kb = file.size! / 1024 < 100; //100Kb
-    const isJpeg = file.type === "image/jpeg";
-    this.validateForm.markAsUntouched();
-
-    if (!isJpeg) {
-      this.alertService.showAlert(
-        "error",
-        "Il file deve essere in formato JPEG."
-      );
-      return false;
-    }
-
-    if (!isLt100kb) {
-      this.alertService.showAlert(
-        "error",
-        "La dimensione del file non deve superare i 100 KB."
-      );
-      return false;
-    }
-
-    this.alertService.hideAlert();
-    this.messageAlert = "";
-    return true;
-  };
 
   goToHome() {
     this.router.navigate(["home"]);
