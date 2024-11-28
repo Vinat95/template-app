@@ -6,7 +6,7 @@ import { catchError, map } from "rxjs/operators";
 import { DOCUMENT } from "@angular/common";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { jwtDecode } from "jwt-decode";
-import { UserAuth, UserRegister } from "../data/update-user.data";
+import { UserAuth, UserLogin, UserRegister } from "../data/update-user.data";
 import { UserState } from "../data/user-state.data";
 import { environment } from "../../environments/environment";
 
@@ -28,6 +28,10 @@ export class AuthService {
 
   doLogin() {
     this.auth.loginWithRedirect();
+  }
+
+  login(user: UserLogin) {
+    return this.http.post(`${environment.host}/users/login/`, user);
   }
 
   doLogout() {

@@ -66,7 +66,7 @@ export default class LoginComponent implements OnDestroy {
   previewVisible = false;
   showPassword = false;
   user: UserLogin = {
-    email: "",
+    username: "",
     password: "",
   };
   validateForm: FormGroup<{
@@ -95,32 +95,14 @@ export default class LoginComponent implements OnDestroy {
       this.alertService.hideAlert();
       this.validateForm.markAsUntouched();
       this.populateBodyUserLogin();
-      // this.auth
-      //   .uploadImageToS3Bucket(this.formData)
-      //   .pipe(
-      //     tap((res: any) => {
-      //       this.populateProfileImage(res.url);
-      //     }),
-      //     switchMap((res: any) => this.auth.registerUser(this.user))
-      //   )
-      //   .subscribe({
-      //     next: (next) => {
-      //       this.alertService.showAlert("success", "Signup successful");
-      //       setTimeout(() => {
-      //         this.router.navigate(["home"]);
-      //       }, 3000);
-      //     },
-      //     error: (error) => {
-      //       if (
-      //         this.user.picture &&
-      //         this.user.picture !== environment.initImage
-      //       ) {
-      //         this.image_key = this.user.picture!.split("/")[3];
-      //         this.auth.deleteImageFromS3Bucket(this.image_key).subscribe();
-      //       }
-      //       this.alertService.showAlert("error", error.message);
-      //     },
-      //   });
+      this.auth.login(this.user).subscribe({
+        next: (next) => {
+          this.router.navigate(["/"]);
+        },
+        error: (error) => {
+          this.alertService.showAlert("error", error.message);
+        },
+      });
     } else {
       Object.values(this.validateForm.controls).forEach((control) => {
         if (control.invalid) {
@@ -132,7 +114,7 @@ export default class LoginComponent implements OnDestroy {
   }
 
   populateBodyUserLogin() {
-    this.user.email = this.validateForm.get("email")
+    this.user.username = this.validateForm.get("email")
       ? this.validateForm.get("email")?.value!
       : "";
     this.user.password = this.validateForm.get("password")
